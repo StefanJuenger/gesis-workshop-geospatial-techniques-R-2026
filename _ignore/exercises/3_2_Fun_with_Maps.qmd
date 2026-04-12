@@ -1,8 +1,8 @@
 ---
-title: "Exercise 3_2: Fun with Maps"
+title: "Exercise 2: Fun with Maps"
 subtitle: 'Introduction to Geospatial Techniques for Social Scientists in R'
-author: Stefan Jünger & Dennis Abel
-format: 
+author: Stefan Jünger & Anne Stroppe & Dennis Abel
+format:
   html:
     embed-resources: true
     code-copy: true
@@ -13,19 +13,31 @@ callout-icon: false
 callout-appearance: minimal
 ---
 
+### Exercises
+
 From here on, you can go and explore!
 
 ::: callout-note
 ## `r emo::ji("weight_lifting_man")` Open Exercise
 
-Have fun creating maps and exploring the package `tmap`!
+Try out some of the options to improve your map from before,work with your own data or play around with interactive maps and animations.
+You can also check out some more resources and get inspired!
+:::
 
-You could try
+::: {.callout-caution collapse="true"}
+## `r emo::ji("bulb")` Inset Maps
 
--   running the command `cols4all::c4a_gui()` to find the name of your favorite color palette
--   running the command `tmap_mode("view")` to make an interactive map
+<https://upgo.lab.mcgill.ca/2019/12/13/making-beautiful-maps/>
+:::
 
-For learning more about alterations:
+::: {.callout-caution collapse="true"}
+## `r emo::ji("bulb")` Getting VERY complex with `ggplot2`
 
--   https://r-tmap.github.io/tmap/index.html
+<https://timogrossenbacher.ch/bivariate-maps-with-ggplot2-and-sf/>
+:::
+
+::: {.callout-caution collapse="true"}
+## `r emo::ji("bulb")` Creating Art
+
+<https://www.r-bloggers.com/2020/10/personal-art-map-with-r/>
 :::

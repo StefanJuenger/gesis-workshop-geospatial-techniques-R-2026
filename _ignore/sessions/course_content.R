@@ -5,7 +5,7 @@ course_content <-
     "April 09", "11:30-11:45", "Coffee Break",
     "April 09", "11:45-13:00", "Data Formats",
     "April 09", "13:00-14:00", "Lunch Break",
-    "April 09", "14:00-15:30", "Mapping I",
+    "April 09", "14:00-15:30", "Mapping",
     "April 09", "15:30-15:45", "Coffee Break",
     "April 09", "15:45-17:00", "Spatial Wrangling",
     "April 10", "09:00-10:30", "Mapping II",
