@@ -22,7 +22,7 @@ In the folder `./data`, you can find the data files prepped for all the exercise
 ::: callout-note
 ## 🏋 Exercise 1
 
-Load the administrative borders of Germany. Therefore, import the shapefile `VG250_STA.shp` from the respective folder and assign it to an object named `germany`.
+Load the administrative borders of Germany. For this purpose, import the shapefile `VG250_STA.shp` from the respective folder and assign it to an object named `germany`.
 
 Plot the newly created object.
 :::
@@ -33,7 +33,7 @@ Plot the newly created object.
 Don't forget to load the packages `sf` and set your working directory before starting this exercise.
 :::
 
-The `R` console output already gives you some information on the data you just loaded. You also see that the object germany\` appeared in your environment. However, we will explore the data set a little bit closely.
+The `R` console output already gives you some information on the data you just loaded. You also see that the object `germany` appeared in your environment. Let's explore the data set a little bit closely.
 
 ::: callout-note
 ## 🏋 Exercise 2
@@ -42,15 +42,26 @@ Explore the data and answer the following questions:
 
 -   What is the geometry type?
 -   What is the ID of the coordinate reference system?
--   Which kind of class is the object?
 -   What is the name of the column containing the information on geometries?
 -   Which attributes are assigned to the geometries?
+:::
+
+::: {.callout-caution collapse="true"}
+## 💡 Tip
+
+You can either extract the information directly from the output or problematically with functions from base `R` and the `sf` package (you may want to have a look, e.g., at the help files `?sf::st_geometry` or `sf::st_crs()`).
 :::
 
 ::: callout-note
 ## 🏋 Exercise 3
 
-Do you have an idea why there are 11 observations instead of only 1, even though we expected a shapefile with the polygon of Germany? Create a new object that contains only one observation filtered by the variable `GF == 4`.
+Do you have an idea why there are 11 observations instead of only 1, even though we expected a shapefile with the polygon of Germany? Create a new object that contains only one observation filtered by the variable `GF == 4`. The data provider, the Federal Agency for Cartography and Geodesy (BKG), has named this variable, which stands for "Geofactor" (German: "Geofaktor"). Maybe you can figure out what this category means after plotting the data.
+:::
+
+::: {.callout-caution collapse="true"}
+## 💡 Tip
+
+You can apply standard `R` procedures to filter data, such as `dplry`'s `filter()` command.
 :::
 
 ### Solutions
@@ -82,8 +93,6 @@ plot(germany)
 
 ```{r}
 sf::st_geometry(germany) # Multipolygon: Set of several Polygons. Each row is a polygon.
-
-class(germany) # "sf", "tbl_df", "tbl" and "data.frame"
 
 attr(germany, "sf_column") # geometry
 
