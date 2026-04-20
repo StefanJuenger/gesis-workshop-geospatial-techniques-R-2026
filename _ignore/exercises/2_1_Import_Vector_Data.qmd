@@ -1,7 +1,7 @@
 ---
 title: "Exercise 2_1: Import Vector Data"
 subtitle: 'Introduction to Geospatial Techniques for Social Scientists in R'
-author: Stefan Jünger & Dennis Abel
+author: Stefan Jünger, Anne-Kathrin Stroppe, Dennis Abel
 format: 
   html:
     embed-resources: true
@@ -20,7 +20,7 @@ Let's get started with some hands-on exercises and exploring some data! This exe
 In the folder `./data`, you can find the data files prepped for all the exercises which rely on preexisting data sets. However, if you like to play around with your data, feel free to do so!
 
 ::: callout-note
-## `r emo::ji("weight_lifting_man")` Exercise 1
+## 🏋 Exercise 1
 
 Load the administrative borders of Germany. Therefore, import the shapefile `VG250_STA.shp` from the respective folder and assign it to an object named `germany`.
 
@@ -28,15 +28,15 @@ Plot the newly created object.
 :::
 
 ::: {.callout-caution collapse="true"}
-## `r emo::ji("bulb")` Tip
+## 💡 Tip
 
 Don't forget to load the packages `sf` and set your working directory before starting this exercise.
 :::
 
-The `R` console output already gives you some information on the data you just loaded. You also see that the object germany` appeared in your environment. However, we will explore the data set a little bit closely.
+The `R` console output already gives you some information on the data you just loaded. You also see that the object germany\` appeared in your environment. However, we will explore the data set a little bit closely.
 
 ::: callout-note
-## `r emo::ji("weight_lifting_man")` Exercise 2
+## 🏋 Exercise 2
 
 Explore the data and answer the following questions:
 
@@ -48,7 +48,7 @@ Explore the data and answer the following questions:
 :::
 
 ::: callout-note
-## `r emo::ji("weight_lifting_man")` Exercise 3
+## 🏋 Exercise 3
 
 Do you have an idea why there are 11 observations instead of only 1, even though we expected a shapefile with the polygon of Germany? Create a new object that contains only one observation filtered by the variable `GF == 4`.
 :::
@@ -56,7 +56,7 @@ Do you have an idea why there are 11 observations instead of only 1, even though
 ### Solutions
 
 ::: {.callout-tip collapse="true"}
-## `r emo::ji("white_check_mark")` Solution 1
+## ✅ Solution 1
 
 ```{r}
 #| eval: false
@@ -78,7 +78,7 @@ plot(germany)
 :::
 
 ::: {.callout-tip collapse="true"}
-## `r emo::ji("white_check_mark")` Solution 2
+## ✅ Solution 2
 
 ```{r}
 sf::st_geometry(germany) # Multipolygon: Set of several Polygons. Each row is a polygon.
@@ -94,7 +94,7 @@ names(germany) # Name, Area Type, Area Size, Population Size ,...
 :::
 
 ::: {.callout-tip collapse="true"}
-## `r emo::ji("white_check_mark")` Solution 3
+## ✅ Solution 3
 
 ```{r}
 # It seems like the shapefile contains not only Germany's land area but also coastal areas and lakes.
