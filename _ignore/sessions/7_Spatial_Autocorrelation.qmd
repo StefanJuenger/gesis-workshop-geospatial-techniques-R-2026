@@ -1,8 +1,8 @@
 ---
-title: "Spatial Autocorrelation"
+title: "Spatial Analysis"
 subtitle: "GESIS Workshop: Introduction to Geospatial Techniques for Social Scientists in R"
-author: "Stefan Jünger & Dennis Abel"
-date: April 10, 2025
+author: "Stefan Jünger, Anne Stroppe & Dennis Abel"
+date: April 24, 2026
 execute:
   echo: true
 format:
@@ -41,9 +41,9 @@ course_content |>
 
 We've done some wrangling, mapping, and linking of geospatial data (with georeferenced survey data)
 
-We've seen that geospatial data are relevant to provide context (as social scientists, we know that space is important), and they are nice to look at--we can tell a story!
+We've seen that geospatial data are relevant to provide context and this context can be communicated with maps--we can tell a story!
 
-**However, geospatial data can be interesting on their own for social science studies!**
+**However, geospatial data can also be utilized to detect and analyze social processes**
 
 ## Tobler's first law of geography
 
@@ -53,14 +53,26 @@ This means nearby geographical regions, institutions, or people are more similar
 
 **What we get is an interdependent system.**
 
-## Spatial Interdependence or Autocorrelation
+## Spatial Interdependence
 
-Tobler's law is the fundamental principle of doing spatial analysis. We want to know
+Tobler's law is the fundamental principle of doing spatial analysis. 
+
+**Spatial autocorrelation** is the correlation of a variable with itself across space, conditional on a specified neighborhood or weights matrix.
+
+We want to know
 
 1. If observations in our data are spatially interdependent
 2. And how this interdependence can be explained (= data generation process)
 
-## Developing a model of connectiveness: the chess board
+## Analyze spatial autocorrelation
+
+Three crucial steps:
+
+1. Define who is connected (neighbourhood matrix)
+2. Define the (relative) strength of connectivity (weights matrix)
+3. Compute autocorrelation
+
+## Step 1: Model connectiveness
 
 :::: columns
 ::: {.column width="50%"}
@@ -97,12 +109,12 @@ Tobler's law is the fundamental principle of doing spatial analysis. We want to 
 :::
 ::::
 
-## Let's do it hands-on: Our 'research' question
+## A hypothetical 'research' question
 
 Say we are interested in AfD voting outcomes in relation to ethnic compositions of neighborhoods.
 
-- Combination of far-right voting research with Allport's classic contact theory
-- We are just doing it in the Urban context of Cologne (again)
+- Combination of far-right voting research with Allport's contact theory
+- We are just doing it in the Urban context of Cologne
 
 ## Voting districts
 
@@ -186,21 +198,23 @@ ggplot() +
 ```{r}
 #| eval: false
 immigrants_cologne <- terra::rast("./data/immigrants_cologne.tif")
-
 inhabitants_cologne <- terra::rast("./data/inhabitants_cologne.tif")
 
-immigrant_share_cologne <-
-  (immigrants_cologne / inhabitants_cologne) * 100
+immigrants_cologne  <- terra::subst(immigrants_cologne,  from = -9, to = NA)
+inhabitants_cologne <- terra::subst(inhabitants_cologne, from = -9, to = NA)
+
+immigrant_share_cologne <- (immigrants_cologne / inhabitants_cologne)*100
 ```
 
 ```{r}
 #| echo: false
 immigrants_cologne <- terra::rast("../../data/immigrants_cologne.tif")
-
 inhabitants_cologne <- terra::rast("../../data/inhabitants_cologne.tif")
 
-immigrant_share_cologne <-
-  (immigrants_cologne / inhabitants_cologne) * 100
+immigrants_cologne  <- terra::subst(immigrants_cologne,  from = -9, to = NA)
+inhabitants_cologne <- terra::subst(inhabitants_cologne, from = -9, to = NA)
+
+immigrant_share_cologne <- (immigrants_cologne / inhabitants_cologne)*100
 ```
 
 ## It's raster data
@@ -212,8 +226,7 @@ immigrant_share_cologne <-
 #| fig.asp: 1
 ggplot() +
   tidyterra::geom_spatraster(
-    data = immigrant_share_cologne,
-    aes(fill = immigrants_cologne)
+    data = immigrant_share_cologne
     ) +
   scale_fill_viridis_c()
 ```
@@ -225,23 +238,22 @@ ggplot() +
 #| fig.asp: 1
 ggplot() +
   tidyterra::geom_spatraster(
-    data = immigrant_share_cologne,
-    aes(fill = immigrants_cologne)
+    data = immigrant_share_cologne
     ) +
   scale_fill_viridis_c()
 ```
 :::
 ::::
 
-## Linking: Let's get geographical
+## Side quest: Aggregating raster by vector
 
 As the voting (vector) data differs from the Census raster data, we cannot use simple ID matching like before.
 
 - We have to rely on spatial linking techniques
 - We could use `terra::extract()`
   - But as a default, it only captures raster cells as a whole and not their spatial fraction
-  - Which is honestly okay for most applications
-  - But why not try something else?
+  - Which would be honestly okay for most applications
+  - But we can also aggregate more precisely with `exactextractr::exact_extract()`
 
 ---
 
@@ -331,6 +343,19 @@ queens_neighborhoods <-
 summary(queens_neighborhoods)
 ```
 
+## And alternative rook neighborhoods
+
+```{r}
+rook_neighborhoods <-
+  spdep::poly2nb(
+    election_results,
+    queen = FALSE
+  )
+
+summary(rook_neighborhoods)
+```
+
+
 ## Connected regions
 
 :::: columns
@@ -338,14 +363,25 @@ summary(queens_neighborhoods)
 ```{r}
 #| eval: false
 #| fig.asp: 1
-queens_neighborhoods |>
+rook_lines <- rook_neighborhoods |>
   spdep::nb2lines(
-    coords = sf::st_as_sfc(election_results), 
+    coords = sf::st_as_sfc(election_results),
     as_sf = TRUE
-  ) |>
-  tm_shape() +
-  tm_dots() +
-  tm_lines()
+  )
+
+queen_lines <- queens_neighborhoods |>
+  spdep::nb2lines(
+    coords = sf::st_as_sfc(election_results),
+    as_sf = TRUE
+  )
+
+nb_points <- sf::st_centroid(queen_lines)
+
+ggplot() +
+  geom_sf(data = queen_lines, color = "firebrick", linewidth = 0.7, alpha = 0.6) +
+  geom_sf(data = rook_lines, color = "steelblue", linewidth = 0.7, alpha = 0.9) +
+  geom_sf(data = nb_points, size = 1.5) +
+  theme_void()
 ```
 :::
 
@@ -353,14 +389,25 @@ queens_neighborhoods |>
 ```{r}
 #| echo: false
 #| fig.asp: 1
-queens_neighborhoods |>
+rook_lines <- rook_neighborhoods |>
   spdep::nb2lines(
-    coords = sf::st_as_sfc(election_results), 
+    coords = sf::st_as_sfc(election_results),
     as_sf = TRUE
-  ) |>
-  tm_shape() +
-  tm_dots() +
-  tm_lines()
+  )
+
+queen_lines <- queens_neighborhoods |>
+  spdep::nb2lines(
+    coords = sf::st_as_sfc(election_results),
+    as_sf = TRUE
+  )
+
+nb_points <- sf::st_centroid(queen_lines)
+
+ggplot() +
+  geom_sf(data = queen_lines, color = "firebrick", linewidth = 0.7, alpha = 0.6) +
+  geom_sf(data = rook_lines, color = "steelblue", linewidth = 0.7, alpha = 0.9) +
+  geom_sf(data = nb_points, size = 1.5) +
+  theme_void()
 ```
 :::
 ::::
@@ -376,9 +423,9 @@ spdep::nb2mat(queens_neighborhoods, style = "B")[1:10, 1:10]
 
 That's nothing we could plug into a statistical model, such as a regression or the like (see next session).
 
-## Normalization
+## Step 2: Normalization
 
-Normalization is the process of creating actual spatial weights. There is a huge dispute on how to do it (Neumayer & Plümper, 2016)^[Neumayer, E., & Plümper, T. (2016). W. Political Science Research and Methods, 4(01), 175–193. https://doi.org/10.1017/psrm.2014.40]. But nobody questions whether it should be done in the first place since, among others, it restricts the parameter space of the weights.
+Normalization is the process of creating actual spatial weights. There is a debate on how to do it (Neumayer & Plümper, 2016)^[Neumayer, E., & Plümper, T. (2016). W. Political Science Research and Methods, 4(01), 175–193. https://doi.org/10.1017/psrm.2014.40]. But nobody questions whether it should be done in the first place since, among others, it restricts the parameter space of the weights.
 
 :::: columns
 ::: {.column width="50%"}
@@ -404,13 +451,94 @@ rowSums(spdep::nb2mat(queens_neighborhoods, style = "W")[1:5, 1:5]) |> as.vector
 
 ## Row-normalization
 
-One of the disputed but, at the same time, standard procedures is row-normalization. It divides all individual weights (=connections between spatial units) $w_{ij}$ by the row-wise sum of of all other weights:
+One of the standard procedures is row-normalization. It divides all individual weights (=connections between spatial units) $w_{ij}$ by the row-wise sum of of all other weights:
 
 $$W = \sum_j\frac{w_{ij}}{\sum_jw_{ij}}$$
 
 An alternative would be min-max-normalization:
 
 $$W = \sum_j\frac{w_{ij}}{min(\{max(r_{i}), max(c_{i})\})}$$
+
+## Effect of row-normalization
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show R code"
+#| fig-width: 12
+#| fig-height: 7
+#| out-width: 100%
+#| fig-align: center
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(ggplot2)
+library(ggpattern)
+
+make_case <- function(focal_x, focal_y, title_text) {
+  grid <- expand.grid(x = 1:5, y = 1:5) |>
+    as_tibble()
+  
+  grid <- grid |>
+    mutate(
+      dist = abs(x - focal_x) + abs(y - focal_y),
+      role = case_when(
+        x == focal_x & y == focal_y ~ "focal",
+        dist == 1 ~ "neighbor",
+        TRUE ~ "other"
+      )
+    )
+  
+  n_nb <- sum(grid$role == "neighbor")
+  
+  grid |>
+    mutate(
+      weight = ifelse(role == "neighbor", 1 / n_nb, NA),
+      label = case_when(
+        role == "focal" ~ "i",
+        role == "neighbor" ~ paste0("1/", n_nb),
+        TRUE ~ ""
+      ),
+      example = title_text
+    )
+}
+
+df <- bind_rows(
+  make_case(3, 3, "Central cell\n4 neighbors → 1/4 each"),
+  make_case(3, 5, "Edge cell\n3 neighbors → 1/3 each")
+)
+
+ggplot(df, aes(x, y)) +
+  geom_tile(fill = "grey95", color = "white", linewidth = 1) +
+  ggpattern::geom_tile_pattern(
+    data = subset(df, role == "neighbor"),
+    fill = "grey95",
+    pattern = "stripe",
+    pattern_fill = "lightgreen",
+    pattern_colour = "lightgreen",
+    pattern_density = 0.35,
+    pattern_spacing = 0.03,
+    color = "white",
+    linewidth = 1
+  ) +
+  geom_tile(
+    data = subset(df, role == "focal"),
+    fill = "gold",
+    color = "white",
+    linewidth = 1
+  ) +
+  geom_text(aes(label = label), size = 5) +
+  facet_wrap(~example) +
+  coord_equal() +
+  scale_y_reverse() +
+  theme_void() +
+  theme(
+    strip.text = element_text(size = 11, face = "bold"),
+    legend.position = "none"
+  )
+
+```
+
 
 ## Apply row-normalization
 
@@ -420,39 +548,8 @@ queens_W <- spdep::nb2listw(queens_neighborhoods, style = "W")
 summary(queens_W)
 ```
 
-## Test of spatial autocorrelation: Moran's I
 
-$$I=\frac{N}{\sum_{i=1}^N\sum_{j=1}^Nw_{ij}}\frac{\sum_{i=1}^{N}\sum_{j=1}^Nw_{ij}(x_i-\bar{x})(x_j-\bar{x})}{\sum_{i=1}^N(x_i-\bar{x})^2}$$
-
-Most and foremost, Moran's I use the previously created weights between all spatial unit pairs $w_{ij}$. It weights deviations from an overall mean value of connected pairs according to the strength of the modeled spatial relations. Moran's I can be interpreted as a correlation coefficient (-1 = perfect negative spatial autocorrelation; +1 = perfect positive spatial autocorrelation).
-
-## Moran's I in `spdep`
-
-```{r}
-spdep::moran.test(
-  election_results$immigrant_share, 
-  listw = queens_W
-)
-```
-
-## Test of spatial autocorrelation: Geary's C
-
-Moran's I is a global statistic for spatial autocorrelation. It can produce issues when there are only local clusters of spatial interdependence in the data. An alternative is the use of `Geary's C`:
-
-$$C=\frac{(N-1)\sum_i\sum_jw_{ij}(x_i-x_j)^2}{2\sum_{i=1}^N\sum_{j=1}^Nw_{ij}\sum_i(x_i-\bar{x})^2}$$
-
-As you can see, in the numerator, the average value $\bar{x}$ is not as prominent as in Moran's I. Geary's C only produces values between 0 and 2 (value near 0 = positive spatial autocorrelation; 1 = no spatial autocorrelation; values near 2 = negative spatial autocorrelation).
-
-## Geary's C in `spdep`
-
-```{r}
-spdep::geary.test(
-  election_results$immigrant_share, 
-  listw = queens_W
-)
-```
-
-## Modern inferface: `sfdep` package
+## Tidyverse alternative: `sfdep` package
 
 The [`sfdep`](https://cran.r-project.org/web/packages/sfdep/index.html) package provides a more `tidyverse`-compliant syntax to spatial weights. See:
 
@@ -467,7 +564,140 @@ election_results <-
 head(election_results, 2)
 ```
 
-## Calculating once again Moran's I
+
+## Step 3: Tests of spatial autocorrelation
+
+$$I=\frac{N}{\sum_{i=1}^N\sum_{j=1}^Nw_{ij}}\frac{\sum_{i=1}^{N}\sum_{j=1}^Nw_{ij}(x_i-\bar{x})(x_j-\bar{x})}{\sum_{i=1}^N(x_i-\bar{x})^2}$$
+
+Most and foremost, **Moran's I** use the previously created weights between all spatial unit pairs $w_{ij}$. It weights deviations from an overall mean value of connected pairs according to the strength of the modeled spatial relations. 
+
+Moran's I can be interpreted as a correlation coefficient (-1 = perfect negative spatial autocorrelation; +1 = perfect positive spatial autocorrelation).
+
+
+## Example patterns
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show R code"
+#| fig-width: 12
+#| fig-height: 7
+#| out-width: 100%
+#| fig-align: center
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(ggplot2)
+library(spdep)
+library(tibble)
+
+# 5x5 grid and rook neighbours
+n <- 5
+grid <- expand.grid(x = 1:n, y = 1:n) |>
+  as_tibble()
+
+nb <- spdep::cell2nb(nrow = n, ncol = n, type = "rook")
+lw <- spdep::nb2listw(nb, style = "W", zero.policy = TRUE)
+
+# helper to compute Moran's I
+moran_I <- function(v) {
+  spdep::moran(
+    x = v,
+    listw = lw,
+    n = length(v),
+    S0 = spdep::Szero(lw),
+    zero.policy = TRUE
+  )$I
+}
+
+# pattern close to +1: iteratively smooth a random field
+make_positive_pattern <- function(target = 0.95, max_iter = 200) {
+  set.seed(123)
+  v <- rnorm(nrow(grid))
+  
+  for (i in seq_len(max_iter)) {
+    v <- 0.35 * v + 0.65 * spdep::lag.listw(lw, v, zero.policy = TRUE)
+    if (moran_I(v) > target) break
+  }
+  
+  as.numeric(scale(v))
+}
+
+# pattern close to 0: search for a near-random arrangement
+make_zero_pattern <- function(tol = 0.05, max_iter = 10000) {
+  best_v <- NULL
+  best_I <- Inf
+  
+  for (i in seq_len(max_iter)) {
+    v <- sample.int(nrow(grid))
+    I <- moran_I(v)
+    
+    if (abs(I) < abs(best_I)) {
+      best_v <- v
+      best_I <- I
+    }
+    
+    if (abs(I) <= tol) break
+  }
+  
+  as.numeric(scale(best_v))
+}
+
+# pattern close to -1: checkerboard
+v_neg <- ifelse((grid$x + grid$y) %% 2 == 0, 1, -1)
+v_zero <- make_zero_pattern()
+v_pos <- make_positive_pattern()
+
+# combine for plotting
+plot_df <- bind_rows(
+  grid |>
+    mutate(
+      value = v_neg,
+      panel = sprintf("Moran's I close to -1\nDispersion pattern", moran_I(v_neg))
+    ),
+  grid |>
+    mutate(
+      value = v_zero,
+      panel = sprintf("Moran's I close to 0\nRandom pattern", moran_I(v_zero))
+    ),
+  grid |>
+    mutate(
+      value = v_pos,
+      panel = sprintf("Moran's I close to 1\nClustering pattern", moran_I(v_pos))
+    )
+)
+
+ggplot(plot_df, aes(x, y, fill = value)) +
+  geom_tile(color = "white", linewidth = 1) +
+  facet_wrap(~panel, nrow = 1) +
+  coord_equal() +
+  scale_y_reverse() +
+  scale_fill_gradient2(
+    low = "steelblue",
+    mid = "white",
+    high = "firebrick",
+    midpoint = 0
+  ) +
+  theme_void() +
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  )
+
+```
+
+
+## Moran's I in `spdep`
+
+```{r}
+spdep::moran.test(
+  election_results$immigrant_share, 
+  listw = queens_W
+)
+```
+
+
+## Moran's I in `sfdep`
 
 ```{r}
 library(magrittr)
@@ -476,7 +706,28 @@ election_results %$%
   sfdep::global_moran_test(immigrant_share, neighbors, weights)
 ```
 
-## Calculating once again Geary's C
+
+## Test of spatial autocorrelation: Geary's C
+
+Moran's I is a global statistic for spatial autocorrelation. It can produce issues when there are only local clusters of spatial interdependence in the data. An alternative is the use of `Geary's C`:
+
+$$C=\frac{(N-1)\sum_i\sum_jw_{ij}(x_i-x_j)^2}{2\sum_{i=1}^N\sum_{j=1}^Nw_{ij}\sum_i(x_i-\bar{x})^2}$$
+
+As you can see, in the numerator, the average value $\bar{x}$ is not as prominent as in Moran's I. 
+
+Geary's C only produces values between 0 and 2 (value near 0 = positive spatial autocorrelation; 1 = no spatial autocorrelation; values near 2 = negative spatial autocorrelation).
+
+## Geary's C in `spdep`
+
+```{r}
+spdep::geary.test(
+  election_results$immigrant_share, 
+  listw = queens_W
+)
+```
+
+
+## Geary's C in `sfdep`
 
 ```{r}
 election_results %$% 
@@ -486,7 +737,7 @@ election_results %$%
 
 ## Exercise 7: Neighborhood Matrices
 
-[Exercise](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2025/exercises/7_Neighborhood_Matrices.html)
+[Exercise](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/7_Neighborhood_Matrices.html)
 
 
 ## Measures of local spatial autocorrelation: LISA clusters
