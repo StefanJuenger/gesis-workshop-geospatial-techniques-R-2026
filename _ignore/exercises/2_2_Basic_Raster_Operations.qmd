@@ -16,7 +16,7 @@ callout-appearance: minimal
 ### Exercises
 
 ::: callout-note
-## ️ Exercise 1
+## 🏋️ Exercise 1
 
 Create a matrix with 8 rows and 8 columns filled with random numbers between 1 and 1000.
 :::
@@ -44,7 +44,7 @@ The `terra::rast()` function can not only be used to create raster data on the f
 ::: callout-note
 ## 🏋 Exercise 3
 
-Import one of the raster `.tif` files in the `./data` folder of the workshop directory. Have a look at it!
+Import one of the raster `.tif` files in the `data` folder of the workshop directory. Have a look at it!
 :::
 
 ::: {.callout-caution collapse="true"}
