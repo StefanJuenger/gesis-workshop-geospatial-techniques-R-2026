@@ -47,7 +47,7 @@ course_content |>
 
 ::::: columns
 ::: {.column width="50%"}
-![](../img/learning_stuff_meme.jpg)<!--  {.r-stretch fig-align="center"} -->
+![](../img/learning_stuff_meme.jpg)
 :::
 
 ::: {.column width="50%"}
