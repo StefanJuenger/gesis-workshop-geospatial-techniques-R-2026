@@ -1,7 +1,7 @@
 ---
 title: "Exercise 4_2: Subsetting and Linking"
 subtitle: 'Introduction to Geospatial Techniques for Social Scientists in R'
-author: Stefan Jünger & Dennis Abel
+author: "Stefan Jünger, Anne-Kathrin Stroppe, Dennis Abel"
 format: 
   html:
     embed-resources: true
@@ -62,7 +62,7 @@ Create a new raster layer comprising Cologne's immigrant rates based on the rast
 ::: {.callout-caution collapse="true"}
 ## `r emo::ji("bulb")` Tip
 
-You need the `immigrants_cologne.tif` and `inhabitants_cologne.tif` files in the `./data` folder. Due to severe data protection measures, the German Census 2011 data could be more sparse.
+You need the `citizens_cologne.tif` and `inhabitants_cologne.tif` files in the `./data` folder. Due to severe data protection measures, the German Census 2012 data could be quite sparse.
 :::
 
 ::: callout-note
@@ -151,7 +151,6 @@ cologne_sur <-
   dplyr::filter(lengths(sf::st_touches(german_districts, cologne)) > 0) |> 
   dplyr::bind_rows(cologne) 
 
-
 # one pipe to rule them all
 cologne_sur_enhanced  <-
   readr::read_delim("./data/charging_points_ger.csv", delim =";") |> 
@@ -233,9 +232,22 @@ cologne_50_points <-
 #| eval: false
 library(terra)
 
+# load all layers
+citizens_cologne <- terra::rast("./data/citizens_cologne.tif")
+inhabitants_cologne <- terra::rast("./data/inhabitants_cologne.tif")
+
+# define missing values
+citizens_cologne[citizens_cologne == -9] <- NA
+inhabitants_cologne[inhabitants_cologne == -9] <- NA
+
+# create immigrants layer
+immigrants_cologne <- inhabitants_cologne - citizens_cologne
+
+# something's off - let's get rid of the wierd negative numbers
+immigrants_cologne[immigrants_cologne < 0] <- NA
+
 immigrant_rates <-
-  terra::rast("./data/immigrants_cologne.tif") * 100 /
-  terra::rast("./data/inhabitants_cologne.tif")
+  immigrants_cologne * 100 / inhabitants_cologne
 
 immigrant_rates_at_point <- terra::extract(immigrant_rates, cologne_50_points)
 
@@ -248,9 +260,22 @@ immigrant_rates_at_point
 #| echo: false
 library(terra)
 
+# load all layers
+citizens_cologne <- terra::rast("../../data/citizens_cologne.tif")
+inhabitants_cologne <- terra::rast("../../data/inhabitants_cologne.tif")
+
+# define missing values
+citizens_cologne[citizens_cologne == -9] <- NA
+inhabitants_cologne[inhabitants_cologne == -9] <- NA
+
+# create immigrants layer
+immigrants_cologne <- inhabitants_cologne - citizens_cologne
+
+# something's off - let's get rid of the wierd negative numbers
+immigrants_cologne[immigrants_cologne < 0] <- NA
+
 immigrant_rates <-
-  terra::rast("../../data/immigrants_cologne.tif") * 100 /
-  terra::rast("../../data/inhabitants_cologne.tif")
+  immigrants_cologne * 100 / inhabitants_cologne
 
 immigrant_rates_at_point <- terra::extract(immigrant_rates, cologne_50_points)
 

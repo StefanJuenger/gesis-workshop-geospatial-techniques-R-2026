@@ -1,7 +1,7 @@
 ---
 title: "Exercise 4_1: OSM Data"
 subtitle: 'Introduction to Geospatial Techniques for Social Scientists in R'
-author: Stefan Jünger & Dennis Abel
+author: "Stefan Jünger, Anne-Kathrin Stroppe, Dennis Abel"
 format: 
   html:
     embed-resources: true
@@ -11,6 +11,8 @@ execute:
 editor: visual
 callout-icon: false
 callout-appearance: minimal
+editor_options: 
+  chunk_output_type: console
 ---
 
 ### Exercises
@@ -61,6 +63,8 @@ Take some time to browse through the data. Depending on your chosen building typ
 ## `r emo::ji("bulb")` Tip
 
 You may consider converting the data into a tibble using `tibble::as_tibble()` and maybe a `sf::st_as_sf()` afterward for a nicer browsing experience.
+
+Bonus: If you aiming to use `tmap`
 :::
 
 ### Solutions
@@ -69,9 +73,9 @@ You may consider converting the data into a tibble using `tibble::as_tibble()` a
 ## `r emo::ji("white_check_mark")` Solution 1
 
 ```{r}
-boothbay <- osmdata::getbb("Boothbay")
+ruegen <- osmdata::getbb("Rügen")
 
-plot(boothbay)
+plot(ruegen)
 
 # We see two points, which build the extremes of the bounding box.
 ```
@@ -81,9 +85,9 @@ plot(boothbay)
 ## `r emo::ji("white_check_mark")` Solution 2
 
 ```{r}
-boothbay <-
-  osmdata::getbb("Boothbay") |>  
-  osmdata::opq(timeout = 25*100) |> 
+ruegen <-
+  osmdata::getbb("Rügen") |>  
+  osmdata::opq(timeout = 25) |> 
   osmdata::add_osm_feature(
     key = "building", 
     value = c("house", "residential", "apartments", "detached", "bungalow")
@@ -95,16 +99,16 @@ boothbay <-
 ## `r emo::ji("white_check_mark")` Solution 3
 
 ```{r}
-boothbay <-
-  osmdata::getbb("Boothbay") |>  
-  osmdata::opq(timeout = 25*100) |> 
+ruegen <-
+  osmdata::getbb("Rügen") |>  
+  osmdata::opq(timeout = 25) |> 
   osmdata::add_osm_feature(
     key = "building", 
     value = c("house", "residential", "apartments", "detached", "bungalow")
   ) |> 
   osmdata::osmdata_sf()
 
-boothbay <- boothbay$osm_polygons
+ruegen <- ruegen$osm_polygons
 ```
 :::
 
@@ -112,18 +116,17 @@ boothbay <- boothbay$osm_polygons
 ## `r emo::ji("white_check_mark")` Solution 4
 
 ```{r}
-library(tmap)
+library(ggplot2)
+library(patchwork)
 
-boothbay <-
-  boothbay |> 
+ruegen <-
+  ruegen |> 
   tibble::as_tibble() |> 
   sf::st_as_sf()
 
-boothbay
+ruegen
 
-# tmap_mode(("view"))
-
-tm_shape(boothbay) +
-  tm_polygons()
+ggplot() +
+  geom_sf(data = ruegen)
 ```
 :::
