@@ -5,7 +5,7 @@ author: "Stefan Jünger & Dennis Abel"
 date: April 10, 2025
 execute:
   echo: true
-  cache: true
+  # cache: true
 format:
   revealjs:
     embed-resources: true
@@ -860,6 +860,6 @@ lm(
 ```
 
 
-## Exercise 6: Using SoRa
+## Exercise 6: Using SoRa💪 {.center style="text-align: center;"}
 
-[Exercise](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/6_Using_SoRa.html)
+🖱[Click here for the exercise](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/6_Using_SoRa.html)

@@ -5,7 +5,7 @@ author: "Stefan Jünger, Anne-Kathrin Stroppe, Dennis Abel"
 date: April 23, 2026
 execute:
   echo: true
-  cache: true
+  # cache: true
 format:
   revealjs:
     embed-resources: true
