@@ -1,8 +1,8 @@
 ---
 title: "Introduction"
 subtitle: "GESIS Workshop: Introduction to Geospatial Techniques for Social Scientists in R"
-author: "Stefan Jünger & Dennis Abel"
-date: April 09, 2025
+author: "Stefan Jünger, Anne Stroppe & Dennis Abel"
+date: April 23, 2026
 execute:
   echo: true
 format:
@@ -23,16 +23,11 @@ This course will teach you how to exploit `R` and apply its geospatial technique
 
 By the end of this course, you should...
 
--   Be comfortable with using geospatial data in `R`
--   Including importing, wrangling, and exploring geospatial data
--   Be able to create maps based on your very own processed geospatial data in `R`
--   Feel prepared for (your first steps in) spatial analysis
+-   Be comfortable with using **geospatial data** in `R`
+-   Including **importing, wrangling, and exploring** geospatial data
+-   Be able to **create maps** based on your very own processed geospatial data in `R`
+-   Feel prepared for (your first steps in) **spatial analysis**
 
-------------------------------------------------------------------------
-
-![](../img/r_first_then.png){.r-stretch fig-align="center"}
-
-Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)
 
 ## We are (necessarily) selective
 
@@ -60,7 +55,7 @@ We will show the use of packages we exploit in practice
 :::
 
 ::: {.column width="60%"}
-![](../img/i-love-programming.jpg){fig-align="center" width="75%"}
+![](../img/rstudio-shop.jpg){fig-align="center" width="60%"}
 :::
 :::::
 
@@ -68,7 +63,7 @@ We will show the use of packages we exploit in practice
 
 ::::: columns
 ::: {.column width="40%"}
-![](../img/Stefan.png){fig-align="center" width="75%"}
+![](../img/Stefan.png){fig-align="center" width="60%"}
 :::
 
 ::: {.column width="60%"}
@@ -83,11 +78,31 @@ We will show the use of packages we exploit in practice
 :::
 :::::
 
+
+## About us (Anne)
+
+::::: columns
+::: {.column width="40%"}
+![](../img/anne_2.png){fig-align="center" width="75%"}
+:::
+
+::: {.column width="60%"}
+- Postdoctoral Researcher in the team Survey Data Augmentation at the GESIS department Survey Data Curation
+- Ph.D. in Political Science, University of Mannheim
+- Research interests:
+  - Quantitative methods, Geographic Information Systems (GIS)
+  - Political trust, resentment and voting
+  - Spatial Disparities
+  - Data Quality of Linked Data
+:::
+:::::
+
+
 ## About us (Dennis)
 
 ::::: columns
 ::: {.column width="40%"}
-![](../img/Dennis.png){fig-align="center" width="75%"}
+![](../img/Dennis.png){fig-align="center" width="60%"}
 :::
 
 ::: {.column width="60%"}
@@ -101,24 +116,6 @@ We will show the use of packages we exploit in practice
 :::
 :::::
 
-## About us (Amelie)
-
-::::: columns
-::: {.column width="40%"}
-![](../img/avatar_amelie.jpg){fig-align="center" width="75%"}
-:::
-
-::: {.column width="60%"}
--   Internship in the Survey Data Augmentation at the GESIS department Survey Data Curation
--   Undergraduate in Geography, University of Bonn
--   Study Interests:
-    -   Geographic Information Systems (GIS)
-    -   Intersectionality of geography and social sciences (e.g. Loss and Damage)
-    -   Biogeography
-    -   Climatology
-    -   Dendrochronology and -ecology
-:::
-:::::
 
 ## About you
 
@@ -132,9 +129,10 @@ We will show the use of packages we exploit in practice
 :::
 
 ::: {.column width="60%"}
-![](../img/so-tell-me-5be02d.jpg){fig-align="center" width="75%"}
+![](../img/austin-powers.jpg){fig-align="center" width="75%"}
 :::
 :::::
+
 
 ## Course schedule
 
@@ -144,6 +142,7 @@ source("course_content.R")
 course_content
 ```
 
+
 ## Now
 
 ```{r}
@@ -151,6 +150,7 @@ course_content
 course_content |> 
   kableExtra::row_spec(1, background = "yellow")
 ```
+
 
 ## Why?
 
@@ -166,6 +166,7 @@ Thus, there's a deep intersection or even embeddedness of space in social scienc
 
 -   It's what geographers call "human-environment-system"
 -   But often, these links are even only implicit in our data
+
 
 ## Geographic information in social science research
 
@@ -183,6 +184,7 @@ For example, Siegfried (1913)[^2] used soil composition information to explain e
 
 [^2]: Siegfried, André. 1913. Tableau Politique de La France de l’Ouest Sous La Troisième République. Paris: Collin.
 
+
 ## Remember the Chicago School?
 
 ![](../img/park_etal.png){fig-align="center" width="35%"}
@@ -190,6 +192,7 @@ For example, Siegfried (1913)[^2] used soil composition information to explain e
 ::: aside
 Park, Robert E., Ernest W. Burgess, and Roderick D. McKenzie. 1925. The City. Suggestions for Investigation of Human Behavior in the Urban Environment. Chicago and London: University of Chicago Press.
 :::
+
 
 ## Today {.smaller}
 
@@ -225,26 +228,75 @@ So many studies still rely on these ideas but incorporate space directly, e.g.,
 :::
 :::::
 
-## Data landscape
+
+## Some recent studies
 
 ::::: columns
 ::: {.column width="50%"}
-Increased amount of available data
+[Hoffmann et al. 2022](https://doi.org/10.1038/s41558-021-01263-8) analyse how the **experience of climate anomalies and extremes** influences **environmental attitudes** and **vote intention** in Europe
 
--   Quantitative and on a small spatial scale
-
-![](../img/tools_today.png){fig-align="left" width="50%"}
+<ul style="font-size:.7em;">
+- Data integration of 1. harmonized **Eurobarometer** data, 2. EU parliamentary **electoral** data, and 3. **climatological** data
+- Aggregation on regional levels (**NUTS-2** and **NUTS-3**)
+- Climatological data from ERA5 reanalysis (CS3)
+- Calculations of temperature anomalies and extremes based on reference period (1971-2000) 
+- Findings suggest effect of temperature anomalies (heat, "dry spell") on environmental concern and vote intention
+</ul>
 :::
 
 ::: {.column width="50%"}
-![](../img/geo_today.png){fig-align="center" width="60%"}
-
-Better tools
-
--   Personal computers with enough horsepower
--   Standard software, such as `R`, can be used as Geographic Information System (GIS)
+![](../img/Hoffmann_et_al_2022.png){fig-align="center" width="80%"}
 :::
 :::::
+
+
+## Some recent studies
+
+::::: columns
+::: {.column width="50%"}
+[Jean et al. 2016](https://doi.org/10.1126/science.aaf7894) show how **nighttime maps** can be utilized as estimates of **household consumption and assets**
+
+<ul style="font-size:.7em;">
+- Economic indicators are hard to measure in poorer countries - satellite imagery could be an alternative proxy for it
+- The authors integrate 1. **survey** data (World Bank’s Living Standards Measurement Surveys - LSMS; and Demographic and Health Surveys - DHS) with 2. **nighttime light** data in five African countries - Nigeria, Tanzania, Uganda, Malawi, and Rwanda
+- ML approach for image feature extraction in nighttime maps
+- Daytime satellite images from Google Static Maps, nighttime lights from US DMSP
+- Model can explain up to 75% of variation in local-level economic outcomes
+</ul>
+:::
+
+::: {.column width="50%"}
+![](../img/Jean_et_al_2016.png){fig-align="center" width="80%"}
+:::
+:::::
+
+
+## Our work: Deprivation & discontent
+
+![](../img/combined_inset_map.png){fig-align="center" width="70%"}
+
+
+## Our work: Climate risks
+
+![](../img/flood_risk.png){fig-align="center" width="50%"}
+
+
+
+
+## The challenge in a nutshell
+
+![](../img/data_structures_1.png){fig-align="center" width="70%"}
+
+## The challenge in a nutshell
+
+![](../img/data_structures_2.png){fig-align="center" width="70%"}
+
+## The challenge in a nutshell
+
+![](../img/data_structures_3.png){fig-align="center" width="70%"}
+
+
+
 
 ## What are geospatial data?
 
@@ -254,8 +306,11 @@ Data with a direct spatial reference
 
 $\rightarrow$ **geo-coordinates** x, y (and z)
 
--   Information about geometries
--   Optional: Content in relation to the geometries
+Visualizing geometries in different styles depending on format:
+
+-   Vector data (points, lines, polygons)
+-   Raster data (grids) 
+-   Coordinate Reference System (CRS)
 :::
 
 ::: {.column width="50%"}
@@ -265,100 +320,125 @@ $\rightarrow$ **geo-coordinates** x, y (and z)
 :::
 :::::
 
-## Geospatial data in this course I
+------------------------------------------------------------------------
 
-In the folder called `./data`, you can find (most of) the data files prepped for all the exercises and slides. The following data are included:
+![](../img/longitude_latitude_meme.jpg){fig-align="center" width="30%"}
 
--   Administrative borders of Germany (Prefix *VG250\_*) are provided by the German [Federal Agency for Cartography and Geodesy](http://www.bkg.bund.de) (2018). Check out their [Open Data Portal](https://gdz.bkg.bund.de/index.php/default/open-data.html).
+## Coordinate reference system (CRS)
 
--   The locations of e-car charging stations in Germany are retrieved from the [Bundesnetzagentur](https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenkarte/start.html).
+- CRS is a reference system to determine the **precise location** of points in space
+- GIS programs **MUST** know CRS for accurate processing, visualization, and analysis of data
 
--   Election Results for the German Right-Wing Populist Party *AfD* in the 2021 German federal election ([Der Bundeswahlleiter, Wiesbaden 2018](https://www.bundeswahlleiter.de/bundestagswahlen/2017/ergebnisse/weitere-ergebnisse.html)).
+**In practice, what matters most is that two or more layers match when integrating them.**
 
-## Geospatial data in this course II
 
--   District attributes are from [INKAR](https://www.inkar.de/) and curated by Bundesinstitut für Bau-, Stadt- und Raumforschung (BBSR)
-
--   German Census 2011 data are provided by the [Federal Statistical Office Germany, Wiesbaden 2020](https://www.zensus2011.de/EN/Home/home_node.html)
-
--   Shapefiles, voting data, and car-related data for Cologne are gathered from the [Open Data Portal Cologne](https://www.offenedaten-koeln.de/)
-
--   Information about public transport stops and streets are from [OpenStreetMap](https://www.openstreetmap.org/)
-
--   Weather data are gathered from [Climate Data Center of the German Weather Service](https://www.dwd.de/DE/klimaumwelt/cdc/cdc_node.html)
-
-**Please make sure that if you reuse any of the provided data to cite the original data sources.**
-
-## What is GIS?
-
-Most common understanding: Geographic Information Systems (GIS) as specific software to process geospatial data for
-
--   Visualization
--   Analysis
--   Interpretation
-
-## Data specifics
-
-::::: columns
-::: {.column width="50%"}
-![](../img/fig_3d_simple.png){fig-align="center" width="75%"}
-
-<small>Sources: OpenStreetMap / GEOFABRIK (2018) and City of Cologne (2014)</small>
-:::
-
-::: {.column width="50%"}
-Formats
-
--   Vector data (points, lines, polygons)
--   Raster data (grids)
-
-Coordinate reference systems
-
--   Allow the projection on earth's surface
--   Differ in precision for specific purposes
-:::
-:::::
-
-## Layers Must Match!
-
-::::: columns
-::: {.column width="50%"}
-<p style="text-align: center;">
-
-EPSG:3857
-
-</p>
-:::
-
-::: {.column width="50%"}
-<p style="text-align: center;">
-
-EPSG:3035
-
-</p>
-:::
-:::::
-
-![](../img/fig_projections.png){.r-stretch fig-align="center"}
-
-<small>Source: Statistical Office of the European Union Eurostat (2018) / Jünger, 2019</small>
-
-## Types of CRS
-
-Differentiating between different CRS is wild (at least for me...). You may hear from geographic, geocentric, projected, or local CRS in your research.
+## Coordinate reference system (CRS)
+<ul style="font-size:.8em;">
+You may hear from **geographic**, **geocentric**, **projected**, or **local** CRS.
 
 What's the difference?
 
--   whether 2 dimensional (longitude, latitude) or 3 dimensional (+height) coordinates are used
--   the location of the coordinate system's origin (center of earth or not)
--   projection on a flat surface (transformation of longitudes and latitudes to x and y coordinates)
--   location (the smaller, the more precise the projections)
+-   whether **2 dimensional** (longitude, latitude) or **3 dimensional** (+height) coordinates are used
+-   the location of the coordinate system's **origin** (center of Earth or not)
+-   **projection** on a flat surface (transformation of longitudes and latitudes to x and y coordinates)
+-   **location** (the smaller, the more precise the projections)
 
-*In practice, you shouldn't worry too much about CRS. Again, what matters is that they match.*
+CRS is based on the:
 
-------------------------------------------------------------------------
+1. **Geographic Coordinate System** (GCS) +
+2. **Projected Coordinate System** (PCS)
 
-![](../img/layers_meme.jpg){.r-stretch fig-align="center"}
+</ul>
+
+## Geographic Coordinate System (GCS)
+
+*Necessary to know where exactly on Earth's surface data is located*
+
+::::: columns
+::: {.column width="50%"}
+<ul style="font-size:.9em;">
+- GCS uses three-dimensional spherical surface to define locations based on **datum** and **latitude** and **longitude** lines
+- **Datum**: Mathematical model of the Earth that serves as reference point by defining size and shape of Earth
+- **Local datum**: Optimizes fit for particular location (like NAD83)
+- **Geocentric datum**: Optimizes fit for entire Earth (like Word Geodetic Survey 1984 - WGS84)
+- **WGS84** is standard for GPS and many applications
+</ul>
+
+:::
+
+::: {.column width="50%"}
+![](../img/gcs.png){fig-align="center" width="90%"}
+
+<small>Source: [Caitlin Dempsey](https://support.tribalgis.com/article/29-basics-of-coordinate-systems-and-projections) </small>
+
+:::
+:::::
+
+## Projected Coordinate System (PCS)
+
+*Necessary to draw the data on a flat map*
+
+::::: columns
+::: {.column width="50%"}
+- PCS represents Earth' surface on a **flat plane** by mathematical transformations (projections)
+- **Coordinate grid**: Here we talk about **x** and **y** coordinates (= easting and northing)
+- Conversion of degrees of latitude and longitude into measurable units (like meters)
+
+:::
+
+::: {.column width="50%"}
+![](../img/projections.png){fig-align="center" width="90%"}
+
+<small>Different projection approaches. Left: Planar, middle: conic, right: cylindrical. [Source](https://support.tribalgis.com/article/29-basics-of-coordinate-systems-and-projections) </small>
+
+:::
+:::::
+
+
+## Common PCS - UTM
+
+**Universal Transverse Mercator** (UTM) is a global map projection which:
+
+<ul style="font-size:.7em;">
+- Projects globe onto a cylinder tangent to a central meridian
+- Divides it into 60 zones
+- Distortion is minimized within each zone
+- Provides high accuracy for small areas
+</ul>
+
+![](../img/utm.png){fig-align="center" width="120%"}
+
+<small>[Source](https://support.tribalgis.com/article/29-basics-of-coordinate-systems-and-projections) </small>
+
+
+## Projections are political
+
+![](../img/trump_greenland.png){fig-align="center" width="40%"}
+
+::: aside
+<small>[Source: Deutsche Welle. 2026.](https://www.instagram.com/p/DTU48EIjRAa/) </small>
+:::
+
+
+## Projections are political
+
+![](../img/greenland_size.png){fig-align="center" width="50%"}
+
+::: aside
+<small>[Source: Joe Hernandez for NPR. 2026.](https://www.npr.org/2026/01/07/nx-s1-5668482/greenland-mercator-map-size-distortion) </small>
+:::
+
+
+## Documentation of CRS
+
+Every geodata object requires a description of the CRS
+
+- **GCS** and **datum**
+- **PCS**
+- **x** and **y units** (like meters)
+- **Domain** (maximum allowable x and y values)
+- **Resolution**
+
 
 ## Old standard: `PROJ.4` strings
 
@@ -372,7 +452,8 @@ This is how your information about the CRS are defined in a classic standard:
 
 (It's nothing you would type by hand)
 
-## New kid in town: `WKT` (“Well Known Text”)
+
+## `WKT` (“Well Known Text”)
 
 <br>
 
@@ -401,17 +482,18 @@ PROJCS["ETRS89 / LAEA Europe",
 
 <small>Source: https://epsg.io/3035</small>
 
+
 ## EPSG Codes
 
 ::::: columns
 ::: {.column width="50%"}
 Eventually, working with CRS in `R` will not be as challenging as it may seem since we don't have to use `PROJ.4` or `WKT` strings directly.
 
-Most of the time, it's enough to use so-called EPSG Codes ("European Petroleum Survey Group Geodesy"), a small digit sequence.
+Most of the time, it's enough to use so-called **EPSG Codes** ("European Petroleum Survey Group Geodesy"), a small digit sequence.
 :::
 
 ::: {.column width="50%"}
-![](../img/ImageEPSGlogo.gif){fig-align="center" width="60%"}
+![](../img/ImageEPSGlogo.gif){fig-align="center" width="70%"}
 
 <p align="center">
 
@@ -420,6 +502,124 @@ Most of the time, it's enough to use so-called EPSG Codes ("European Petroleum S
 </p>
 :::
 :::::
+
+
+## Layers Must Match!
+
+::::: columns
+::: {.column width="50%"}
+<p style="text-align: center;">
+
+EPSG:3857
+
+</p>
+:::
+
+::: {.column width="50%"}
+<p style="text-align: center;">
+
+EPSG:3035
+
+</p>
+:::
+:::::
+
+![](../img/fig_projections.png){.r-stretch fig-align="center"}
+
+<small>Source: Statistical Office of the European Union Eurostat (2018) / Jünger, 2019</small>
+
+
+## Geospatial data and software
+
+::::: columns
+::: {.column width="50%"}
+Increased amount of **available data**
+
+- Quantitative and on a small spatial scale
+- Often open source and free access
+
+![](../img/tools_today.png){fig-align="left" width="50%"}
+:::
+
+::: {.column width="50%"}
+![](../img/geo_today.png){fig-align="center" width="60%"}
+
+Better **tools**
+
+-   Standard software, such as `R`, can be used as Geographic Information System (GIS)
+:::
+:::::
+
+
+## So this is GIS!
+
+Most common understanding: **Geographic Information Systems** (GIS) as specific software to **process** geospatial data for
+
+-   **Visualization**
+-   **Analysis**
+-   **Interpretation**
+
+$\rightarrow$ In our case, of course, it is `R`
+
+But base `R` is limited when it comes to handling geospatial data
+
+
+## Packages in this course I `r emo::ji("package")`
+
+We will use plenty of different packages during the course, but only a few are our main drivers (e.g., the `sf` package). Here's a list of core packages from CRAN you may need for the exercises. The first exercise
+contains the full list, including Non-CRAN packages.
+
+-   [`dplyr`](https://cran.r-project.org/web/packages/dplyr/index.html)
+-   [`ggplot2`](https://cran.r-project.org/web/packages/ggplot2/index.html)
+-   [`ggspatial`](https://cran.r-project.org/web/packages/ggspatial/index.html)
+-   [`osmdata`](https://cran.r-project.org/web/packages/osmdata/index.html)
+-   [**`OpenStreetMap`**](https://cran.r-project.org/web/packages/OpenStreetMap/index.html)[^3]
+-   [`sf`](https://cran.r-project.org/web/packages/sf/index.html)
+-   [`spatialreg`](https://cran.r-project.org/web/packages/spatialreg/index.html)
+
+[^3]: If you use a Mac, you may need to install Java: https://www.java.com/de/download/
+
+## Packages in this course II `r emo::ji("package")`
+
+-   [`spatstat`](https://cran.r-project.org/web/packages/spatstat/index.html)
+-   [`sfdep`](https://cran.r-project.org/web/packages/sfdep/index.html)
+-   [`spdep`](https://cran.r-project.org/web/packages/spdep/index.html)
+-   [`terra`](https://cran.r-project.org/web/packages/terra/index.html)
+-   [`tidygeocoder`](https://cloud.r-project.org/web/packages/tidygeocoder/index.html)
+-   [`tidyterra`](https://cran.r-project.org/web/packages/tidyterra/index.html)
+-   [`tmap`](https://cran.r-project.org/web/packages/tmap/index.html)
+-   [`tmaptools`](https://cran.r-project.org/web/packages/tmaptools/index.html)
+
+------------------------------------------------------------------------
+
+![](../img/r_first_then.png){.r-stretch fig-align="center"}
+
+Illustration by [Allison Horst](https://github.com/allisonhorst/stats-illustrations)
+
+## Geospatial data in this course I
+
+In the folder called `./data`, you can find (most of) the data files prepped for all the exercises and slides. The following data are included:
+
+-   Administrative borders of Germany (Prefix *VG250\_*) are provided by the German [Federal Agency for Cartography and Geodesy](http://www.bkg.bund.de) (2018). Check out their [Open Data Portal](https://gdz.bkg.bund.de/index.php/default/open-data.html).
+
+-   The locations of e-car charging stations in Germany are retrieved from the [Bundesnetzagentur](https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenkarte/start.html).
+
+-   Election Results for the German Right-Wing Populist Party *AfD* in the 2021 German federal election ([Der Bundeswahlleiter, Wiesbaden 2018](https://www.bundeswahlleiter.de/bundestagswahlen/2017/ergebnisse/weitere-ergebnisse.html)).
+
+## Geospatial data in this course II
+
+-   District attributes are from [INKAR](https://www.inkar.de/) and curated by Bundesinstitut für Bau-, Stadt- und Raumforschung (BBSR)
+
+-   German Census 2011 data are provided by the [Federal Statistical Office Germany, Wiesbaden 2020](https://www.zensus2011.de/EN/Home/home_node.html)
+
+-   Shapefiles, voting data, and car-related data for Cologne are gathered from the [Open Data Portal Cologne](https://www.offenedaten-koeln.de/)
+
+-   Information about public transport stops and streets are from [OpenStreetMap](https://www.openstreetmap.org/)
+
+-   Weather data are gathered from [Climate Data Center of the German Weather Service](https://www.dwd.de/DE/klimaumwelt/cdc/cdc_node.html)
+
+**Please make sure that if you reuse any of the provided data to cite the original data sources.**
+
 
 ## More details on geospatial data
 
@@ -433,31 +633,7 @@ Let's learn about geospatial data as we learn about specific formats
 
 </p>
 
-## Packages in this course I
-
-We will use plenty of different packages during the course, but only a few are our main drivers (e.g., the `sf` package). Here's the list of packages you may need for the exercises:
-
--   [`dplyr`](https://cran.r-project.org/web/packages/dplyr/index.html)
--   [`ggplot2`](https://cran.r-project.org/web/packages/ggplot2/index.html)
--   [`ggspatial`](https://cran.r-project.org/web/packages/ggspatial/index.html)
--   [`osmdata`](https://cran.r-project.org/web/packages/osmdata/index.html)
--   [**`OpenStreetMap`**](https://cran.r-project.org/web/packages/OpenStreetMap/index.html)[^3]
--   [`sf`](https://cran.r-project.org/web/packages/sf/index.html)
--   [`spatialreg`](https://cran.r-project.org/web/packages/spatialreg/index.html)
-
-[^3]: If you use a Mac, you may need to install Java: https://www.java.com/de/download/
-
-## Packages in this course II
-
--   [`spatstat`](https://cran.r-project.org/web/packages/spatstat/index.html)
--   [`sfdep`](https://cran.r-project.org/web/packages/sfdep/index.html)
--   [`spdep`](https://cran.r-project.org/web/packages/spdep/index.html)
--   [`terra`](https://cran.r-project.org/web/packages/terra/index.html)
--   [`tidygeocoder`](https://cloud.r-project.org/web/packages/tidygeocoder/index.html)
--   [`tidyterra`](https://cran.r-project.org/web/packages/tidyterra/index.html)
--   [`tmap`](https://cran.r-project.org/web/packages/tmap/index.html)
--   [`tmaptools`](https://cran.r-project.org/web/packages/tmaptools/index.html)
 
 ## Exercise 1: Package Installation
 
-[Exercise](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2025/exercises/1_Package_Installation.html)
+[Exercise](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/1_Package_Installation.html)
