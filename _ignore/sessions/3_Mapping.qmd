@@ -1,7 +1,7 @@
 ---
 title: "Mapping"
 subtitle: "GESIS Workshop: Introduction to Geospatial Techniques for Social Scientists in R"
-author: "Stefan Jünger & Anne Stroppe & Dennis Abel"
+author: "Stefan Jünger, Anne-Kathrin Stroppe, Dennis Abel"
 date: April 23, 2026
 execute:
   echo: true
@@ -31,6 +31,7 @@ library(colorBlindness)
 library(mapview)
 library(leaflet)
 library(gganimate)
+library(gifski)
 library(tmap)
 ```
 
@@ -39,9 +40,9 @@ library(tmap)
 
 ```{r}
 #| echo: false
-source("course_content.R")
+source("./course_content.R") 
 
-course_content |>
+course_content |> 
   kableExtra::row_spec(5, background = "yellow")
 ```
 
@@ -179,6 +180,12 @@ immigrants_cologne <- terra::rast("./data/immigrants_cologne.tif")
 attributes_cologne  <- sf::read_sf("../../data/attributes_cologne.shp")
 charger_cologne     <- sf::read_sf("../../data/charger_cologne.shp")
 immigrants_cologne  <- terra::rast("../../data/immigrants_cologne.tif")
+
+# Bandname umbenennen
+names(immigrants_cologne) <- "immigrants_cologne"
+# -9 als NA klassifizieren
+immigrants_cologne[immigrants_cologne == -9] <- NA
+
 ```
 
 ## The attribute table
@@ -398,7 +405,7 @@ Furthermore, `ggsave()` automatically detects the file format from the extension
 
 ```{r}
 #| eval: false
-ggsave("cologne_map_better.png", cologne_map, dpi = 300)
+ggsave("cologne_map_better.png", cologne_map_better, dpi = 300)
 
 ```
 
@@ -762,6 +769,65 @@ ggplot() +
 :::
 ::::
 
+## Animated maps
+
+`gganimate` extends `ggplot2` with animation — add one transition layer to any existing map.
+
+Key transition functions:
+
+| Function | Use case |
+|---|---|
+| `transition_manual(var)` | Step through a categorical variable (e.g. party, month name) |
+| `transition_states(var)` | Smooth transitions between groups |
+| `transition_time(var)` | Animate along a numeric time variable |
+
+## Animated maps
+
+:::: columns
+::: {.column width="50%"}
+```{r}
+#| eval: false
+library(gganimate)
+library(gifski)
+
+# reuse cologne_parties from the facets slide
+vote_animation <-
+  ggplot() +
+  geom_sf(
+    data  = cologne_parties,
+    aes(fill = vote_share),
+    color = NA
+  ) +
+  scale_fill_viridis_c(
+    option    = "plasma",
+    direction = -1,
+    name      = "Vote Share"
+  ) +
+  theme_void() +
+  theme(legend.position = "bottom") +
+  labs(
+    # {current_frame} is replaced by the active frame value
+    title   = "EU Election 2019 in Cologne — {current_frame}",
+    caption = "© Stadt Köln"
+  ) +
+  # one frame per party, no interpolation between categories
+  gganimate::transition_manual(party)
+
+# render (nframes = number of parties, fps = speed)
+gganimate::animate(vote_animation, nframes = 6, fps = 1)
+
+# save as GIF
+gganimate::anim_save("vote_animation.gif")
+```
+:::
+
+::: {.column width="50%"}
+![](../img/vote_animation.gif){fig-align="center" width="50%"}
+:::
+::::
+
+
+
 ## Adding map labels: data preparation
 
 To add labels, we  need regular X/Y columns — not geometries. We use `sf::st_centroid()` to find polygon centers, then `sf::st_coordinates()` to extract the coordinates.
@@ -903,61 +969,6 @@ mapview::mapshot(leaflet_map, url = "leaflet_map.html")
   
 ```
 
-## Animated maps
-
-`gganimate` extends `ggplot2` with animation — add one transition layer to any existing map.
-
-Key transition functions:
-
-| Function | Use case |
-|---|---|
-| `transition_manual(var)` | Step through a categorical variable (e.g. party, month name) |
-| `transition_states(var)` | Smooth transitions between groups |
-| `transition_time(var)` | Animate along a numeric time variable |
-
-## Animated maps
-
-:::: columns
-::: {.column width="50%"}
-```{r}
-#| eval: false
-library(gganimate)
-
-# reuse cologne_parties from the facets slide
-vote_animation <-
-  ggplot() +
-  geom_sf(
-    data  = cologne_parties,
-    aes(fill = vote_share),
-    color = NA
-  ) +
-  scale_fill_viridis_c(
-    option    = "plasma",
-    direction = -1,
-    name      = "Vote Share"
-  ) +
-  theme_void() +
-  theme(legend.position = "bottom") +
-  labs(
-    # {current_frame} is replaced by the active frame value
-    title   = "EU Election 2019 in Cologne — {current_frame}",
-    caption = "© Stadt Köln"
-  ) +
-  # one frame per party, no interpolation between categories
-  gganimate::transition_manual(party)
-
-# render (nframes = number of parties, fps = speed)
-gganimate::animate(vote_animation, nframes = 6, fps = 1)
-
-# save as GIF
-gganimate::anim_save("vote_animation.gif")
-```
-:::
-
-::: {.column width="50%"}
-![](../img/vote_animation.gif){fig-align="center" width="50%"}
-:::
-::::
 
 ## `ggplot2` and raster data
 

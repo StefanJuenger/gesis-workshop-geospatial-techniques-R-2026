@@ -13,6 +13,12 @@ callout-icon: false
 callout-appearance: minimal
 ---
 
+```{r}
+#| include: false
+library(emo)
+```
+
+
 ### Exercises
 
 From here on, you can go and explore!
