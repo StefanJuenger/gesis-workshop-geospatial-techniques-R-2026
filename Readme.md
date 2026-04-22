@@ -44,16 +44,14 @@ This page comprises the official workshop repository with the most recent change
 
 [2 Data Formats](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/2_Data_Formats.html)
 
-[3 Mapping I](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/3_Mapping_I.html)
+[3 Mapping](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/3_Mapping.html)
 
 [4 Spatial Wrangling](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/4_Spatial_Wrangling.html)
 
 ### Day 2
-[5 Mapping II](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/5_Mapping_II.html)
-
 [6 Applied Spatial Linking](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/6_Applied_Spatial_Linking.html)
 
-[7 Spatial Autocorrelation](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/7_Spatial_Autocorrelation.html)
+[7 Spatial Analysis](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/7_Spatial_Analysis.html)
 
 [8 Spatial Econometrics & Outlook](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/slides/8_Spatial_Econometrics_Outlook.html)
 
@@ -64,7 +62,7 @@ This page comprises the official workshop repository with the most recent change
 
 [2_2 Basic Raster Operations](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/2_2_Basic_Raster_Operations.html)
 
-[3_1 Basic Maps](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/3_1_Basic_Maps.html)
+[3_1 Mapping](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/3_1_Mapping.html)
 
 [3_2 Fun with Maps](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/3_2_Fun_with_Maps.html)
 
@@ -72,11 +70,7 @@ This page comprises the official workshop repository with the most recent change
 
 [4_2 Subsetting and Linking](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/4_2_Subsetting_Linking.html)
 
-[5_1 Advanced Maps](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/5_1_Advanced_Maps.html)
-
-[5_1 The Perfect Map](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/5_2_The_Perfect_Map.html)
-
-[6 Spatial Joins](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/6_Spatial_Joins.html)
+[6 Using SoRa](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/6_Using_SoRa.html)
 
 [7 Neighborhood Matrices](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/7_Neighborhood_Matrices.html)
 
