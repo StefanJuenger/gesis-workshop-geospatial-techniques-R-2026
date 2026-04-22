@@ -8,11 +8,11 @@ course_content <-
     "April 09", "14:00-15:30", "Mapping",
     "April 09", "15:30-15:45", "Coffee Break",
     "April 09", "15:45-17:00", "Spatial Wrangling",
-    "April 10", "09:00-10:30", "Mapping II",
+    "April 10", "09:00-10:30", "Spatial Wrangling",
     "April 10", "10:30-10:45", "Coffee Break",
     "April 10", "10:45-12:00", "Applied Spatial Linking",
     "April 10", "12:00-13:00", "Lunch Break",
-    "April 10", "13:00-14:30", "Spatial Autocorrelation",
+    "April 10", "13:00-14:30", "Spatial Analysis",
     "April 10", "14:30-14:45", "Coffee Break",
     "April 10", "14:45-16:00", "Spatial Econometrics & Outlook"
   ) |>
@@ -27,4 +27,4 @@ course_content <-
   kableExtra::row_spec(9, color = "gray") |>
   kableExtra::row_spec(11, color = "gray") |>
   kableExtra::row_spec(13, color = "gray") |>
-  kableExtra::row_spec(5, extra_css = "border-bottom: 1px solid")
+  kableExtra::row_spec(7, extra_css = "border-bottom: 1px solid")
