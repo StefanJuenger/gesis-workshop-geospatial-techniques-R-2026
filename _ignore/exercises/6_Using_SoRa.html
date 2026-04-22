@@ -2538,7 +2538,215 @@ Using custom data with EPSG code 3035.
 </div>
 <div id="callout-14" class="callout-14-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># circles</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sora_circles <span class="ot">&lt;-</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  sora<span class="sc">::</span><span class="fu">sora_request</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset =</span> synthetic_survey_geocoordinates,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">link_to =</span> <span class="st">&quot;ioer-monitor-r01rg-2021-1000m&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&quot;aggregate_attribute&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">selection_area =</span> <span class="st">&quot;circle&quot;</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">radius =</span> <span class="dv">10000</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">output =</span> <span class="st">&quot;mean&quot;</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">wait =</span> <span class="cn">TRUE</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ The provided coordinates have unique identifiers and are in a valid format.
+→ The requested sora-provided geospatial dataset exists.
+→ Chosen geospatial dataset: Percentage of flood zones to reference area (2021,
+  1000m Raster) from IOER-Monitor (IOER)
+→ Chosen linkage: Aggregate attribute within circle on raster with numeric
+  field - Geocoded Dataset: Vector: Point | Geospatial Dataset: Raster -
+  numeric
+→ The requested linkage is plausible and fits the chosen geospatial dataset.
+  All provided parameters are valid, including their values.
+→ All required permissions for accessing the data are available.
+→ Total number of provided coordinates: 500 (valid: 500, having null values:
+  0).
+→ Number of coordinates located within the bounding box of the geospatial
+  dataset: 500 (outside: 0).
+→ All required external services are available.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Information from SoRa: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Hello from the SoRa-X-API. Everything is in good order. Have a nice day!
+Waiting for results...
+→ The linking job was created at 2026-04-22 15:31:48
+→ The processing of the linking jobs has started at 2026-04-22 15:31:54
+→ The processing of the linking job has finished at 2026-04-22 15:32:31
+→ The total count of input items is 500 (successfully linked: 500)
+→ Linking method: aggregate_attribute
+→ Chosen linking parameter: output = [&#39;mean&#39;]; radius = 10000; selection_area =
+  circle
+→ Chosen geospatial dataset: ioer-monitor-r01rg-2021-1000m - Percentage of
+  flood zones to reference area (2021, 1000m Raster) from IOER-Monitor (IOER)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Information from SoRa: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Hello from the SoRa-X-API. Everything is in good order. Have a nice day!</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sora_circles</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 500 × 4
+   id          area   mean count
+   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+ 1 142   312144515.  1.96    309
+ 2 263   312144515.  1.78    309
+ 3 839   312144515.  0.629   309
+ 4 1400  312144515.  0.779   309
+ 5 1783  312144515.  5.52    309
+ 6 705   312144515.  5.53    309
+ 7 392   312144515.  6.69    309
+ 8 120   312144515. 15.0     309
+ 9 1612  312144515.  4.51    309
+10 1533  312144515.  2.02    309
+# ℹ 490 more rows</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># squares</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>sora_squares <span class="ot">&lt;-</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  sora<span class="sc">::</span><span class="fu">sora_request</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset =</span> synthetic_survey_geocoordinates,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">link_to =</span> <span class="st">&quot;ioer-monitor-r01rg-2021-1000m&quot;</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&quot;aggregate_attribute&quot;</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">selection_area =</span> <span class="st">&quot;square&quot;</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">length =</span> <span class="dv">10000</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">output =</span> <span class="st">&quot;mean&quot;</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">wait =</span> <span class="cn">TRUE</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ The provided coordinates have unique identifiers and are in a valid format.
+→ The requested sora-provided geospatial dataset exists.
+→ Chosen geospatial dataset: Percentage of flood zones to reference area (2021,
+  1000m Raster) from IOER-Monitor (IOER)
+→ Chosen linkage: Aggregate attribute within square on raster with numeric
+  field - Geocoded Dataset: Vector: Point | Geospatial Dataset: Raster -
+  numeric
+→ The requested linkage is plausible and fits the chosen geospatial dataset.
+  All provided parameters are valid, including their values.
+→ All required permissions for accessing the data are available.
+→ Total number of provided coordinates: 500 (valid: 500, having null values:
+  0).
+→ Number of coordinates located within the bounding box of the geospatial
+  dataset: 500 (outside: 0).
+→ All required external services are available.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Information from SoRa: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Hello from the SoRa-X-API. Everything is in good order. Have a nice day!
+Waiting for results...
+→ The linking job was created at 2026-04-22 15:32:35
+→ The processing of the linking jobs has started at 2026-04-22 15:32:44
+→ The processing of the linking job has finished at 2026-04-22 15:33:20
+→ The total count of input items is 500 (successfully linked: 500)
+→ Linking method: aggregate_attribute
+→ Chosen linking parameter: length = 10000; output = [&#39;mean&#39;]; selection_area =
+  square
+→ Chosen geospatial dataset: ioer-monitor-r01rg-2021-1000m - Percentage of
+  flood zones to reference area (2021, 1000m Raster) from IOER-Monitor (IOER)</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Information from SoRa: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Hello from the SoRa-X-API. Everything is in good order. Have a nice day!</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>sora_squares</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 500 × 4
+   id         area   mean count
+   &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;
+ 1 142   100000000  2.68    121
+ 2 263   100000000  0.655   121
+ 3 839   100000000  0.715   121
+ 4 1400  100000000  0.201   121
+ 5 1783  100000000  2.95    121
+ 6 705   100000000  7.97    121
+ 7 392   100000000 11.4     121
+ 8 120   100000000 16.4     121
+ 9 1612  100000000  5.30    121
+10 1533  100000000  2.03    121
+# ℹ 490 more rows</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># isochrones</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>sora_isochrones <span class="ot">&lt;-</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  sora<span class="sc">::</span><span class="fu">sora_request</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset =</span> synthetic_survey_geocoordinates,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">link_to =</span> <span class="st">&quot;ioer-monitor-r01rg-2021-1000m&quot;</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&quot;aggregate_attribute&quot;</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">selection_area =</span> <span class="st">&quot;isochrone&quot;</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">transport_mode =</span> <span class="st">&quot;foot-walking&quot;</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">routing_type =</span> <span class="st">&quot;time&quot;</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">interval =</span> <span class="dv">10</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">output =</span> <span class="st">&quot;mean&quot;</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">wait =</span> <span class="cn">TRUE</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>→ The provided coordinates have unique identifiers and are in a valid format.
+→ The requested sora-provided geospatial dataset exists.
+→ Chosen geospatial dataset: Percentage of flood zones to reference area (2021,
+  1000m Raster) from IOER-Monitor (IOER)
+→ Chosen linkage: Aggregate attribute within isochrone on raster with numeric
+  field - Geocoded Dataset: Vector: Point | Geospatial Dataset: Raster -
+  numeric
+→ The requested linkage is plausible and fits the chosen geospatial dataset.
+  All provided parameters are valid, including their values.
+→ All required permissions for accessing the data are available.
+→ Total number of provided coordinates: 500 (valid: 500, having null values:
+  0).
+→ Number of coordinates located within the bounding box of the geospatial
+  dataset: 500 (outside: 0).
+→ All required external services are available.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Information from SoRa: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Hello from the SoRa-X-API. Everything is in good order. Have a nice day!
+Waiting for results...
+→ The linking job was created at 2026-04-22 15:33:24
+→ The processing of the linking jobs has started at 2026-04-22 15:33:34
+→ The processing of the linking job has finished at 2026-04-22 15:34:21
+→ The total count of input items is 500 (successfully linked: 498)
+→ Linking method: aggregate_attribute
+→ Chosen linking parameter: output = [&#39;mean&#39;]; interval = 10; routing_type =
+  time; selection_area = isochrone; transport_mode = foot-walking
+→ Chosen geospatial dataset: ioer-monitor-r01rg-2021-1000m - Percentage of
+  flood zones to reference area (2021, 1000m Raster) from IOER-Monitor (IOER)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in &quot;function `sora_results()`&quot;: ! There are problems with rows 295 and 404.
+ℹ To inspect the problems, call `sora_problems(...)` on your output.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Information from SoRa: </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Hello from the SoRa-X-API. Everything is in good order. Have a nice day!</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sora_isochrones</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 500 × 4
+   id        area  mean count
+   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+ 1 142     68962.  0        1
+ 2 263   1476842   0        1
+ 3 839   1020117.  2.53     1
+ 4 1400  1433308.  0        1
+ 5 1783  1036146.  0        1
+ 6 705   1485221.  0        1
+ 7 392    724347. 91.8      1
+ 8 120    632333.  0        1
+ 9 1612   309423. NA        0
+10 1533  1472702.  7.22     1
+# ℹ 490 more rows</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

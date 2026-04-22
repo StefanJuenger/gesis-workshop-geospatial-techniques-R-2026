@@ -11,6 +11,8 @@ execute:
 editor: visual
 callout-icon: false
 callout-appearance: minimal
+editor_options: 
+  chunk_output_type: console
 ---
 
 In this exercise, we will work with the SoRa API to search for some data and link them to some input datasets. It is quite open in terms which datasets you want to use and how you want to link them. Generally, we recommend to have a closer look at the cheat sheet in the `slides` folder.
@@ -159,5 +161,49 @@ synthetic_survey_geocoordinates
 ::: {.callout-tip collapse="true"}
 ## ✅ Solution 6
 
-...
+```{r}
+# circles
+sora_circles <-
+  sora::sora_request(
+    dataset = synthetic_survey_geocoordinates,
+    link_to = "ioer-monitor-r01rg-2021-1000m",
+    method = "aggregate_attribute",
+    selection_area = "circle",
+    radius = 10000,
+    output = "mean",
+    wait = TRUE
+  )
+
+sora_circles
+
+# squares
+sora_squares <-
+  sora::sora_request(
+    dataset = synthetic_survey_geocoordinates,
+    link_to = "ioer-monitor-r01rg-2021-1000m",
+    method = "aggregate_attribute",
+    selection_area = "square",
+    length = 10000,
+    output = "mean",
+    wait = TRUE
+  )
+
+sora_squares
+
+# isochrones
+sora_isochrones <-
+  sora::sora_request(
+    dataset = synthetic_survey_geocoordinates,
+    link_to = "ioer-monitor-r01rg-2021-1000m",
+    method = "aggregate_attribute",
+    selection_area = "isochrone",
+    transport_mode = "foot-walking",
+    routing_type = "time",
+    interval = 10,
+    output = "mean",
+    wait = TRUE
+  )
+
+sora_isochrones
+```
 :::
