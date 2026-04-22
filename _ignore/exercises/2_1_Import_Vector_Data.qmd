@@ -17,7 +17,7 @@ callout-appearance: minimal
 
 Let's get started with some hands-on exercises and exploring some data! This exercise focuses on importing different vector data geometries from various sources and getting used to simple feature data tables.
 
-In the folder `./data`, you can find the data files prepped for all the exercises which rely on preexisting data sets. However, if you like to play around with your data, feel free to do so!
+In the folder `data`, you can find the data files prepped for all the exercises which rely on preexisting data sets. However, if you like to play around with your data, feel free to do so!
 
 ::: callout-note
 ## 🏋 Exercise 1
