@@ -5,11 +5,10 @@ author: "Stefan Jünger, Anne-Kathrin Stroppe, Dennis Abel"
 date: April 23, 2026
 execute:
   echo: true
-  cache: true
 format:
   revealjs:
     embed-resources: true
-    theme: [simple, tweaks.css]
+    theme: [simple, tweaks.css, tweaks_code.css]
     smaller: true
     scrollable: true
     slide-number: false
@@ -20,35 +19,45 @@ knitr:
   opts_chunk: 
     R.options:
       width: 120
+  opts_knit: 
+    root.dir: ../../
 ---
 
 ```{r}
 #| echo: false
-#| cache: false
 library(dplyr)
 library(sf)
 library(terra)
 library(tmap)
-knitr::opts_knit$set(root.dir = normalizePath('../../'))
+# knitr::opts_knit$set(root.dir = normalizePath('../../'))
 ```
+
 
 ```{r}
 #| echo: false
 source("./_ignore/sessions/course_content.R") 
 
 course_content |> 
-  kableExtra::row_spec(3, background = "yellow")
+  kableExtra::row_spec(3, background = "yellow") |> 
+  kableExtra::kable_styling(font_size = 23)
 ```
+
 
 ## Why care about data types and formats?
 
+::::: columns
+::: {.column width="50%"}
+![](../img/learning_stuff_meme.jpg)<!--  {.r-stretch fig-align="center"} -->
+:::
+
+::: {.column width="50%"}
 There are differences in how spatial information is stored, processed, and visually represented.
 
 -   Different commands for data import and manipulation
 -   Spatial linking techniques and analyses partly determined by data format
 -   Visualization of data can vary
-
-So, always know what kind of data you are dealing with!
+:::
+:::::
 
 ## Vector and raster data
 
@@ -102,7 +111,7 @@ Every real-world feature is one of three types of geometry:
 
 ## Vector data: attribute tables
 
-Only geometries means that we do not have any other information.
+If we have geometries, we do not necessarily have any other information.
 
 We must assign attributes to each geometry to hold additional information $\rightarrow$ data tables called attribute tables.
 
@@ -123,7 +132,7 @@ We must assign attributes to each geometry to hold additional information $\righ
 
 ## Welcome to the proprietary reality: shapefiles
 
-Both the geometric information and attribute table can be saved within one file. Rather often, *ESRI Shapefiles* are used to store vector data. Shapefiles consist of at least three mandatory files with the following extensions:
+Both the geometric information and attribute table could be saved within one file. Rather often, *ESRI Shapefiles* are used to store vector data. Shapefiles consist of at least three mandatory files with the following extensions:
 
 -   `.shp`: shape format
 -   `.shx`: shape index format
@@ -156,20 +165,32 @@ Several packages are out there to wrangle and visualize spatial and, especially,
 
 ## Load a shapefile
 
-The first step is, of course, loading the data. We want to import the shapefile for the administrative borders of the German states (*Bundesländer*) called `VG250_LAN.shp`.
+The first step is, of course, loading the data. We want to import the shapefile for the administrative borders of the German states (*Bundesländer*) called `VG250_LAN.shp` in the `data` folder.
 
 ```{r}
+#| eval: false
 # load library
 library(sf)
 
 # load data
 german_states <- sf::read_sf("./data/VG250_LAN.shp")
+
+# let's have a look
+german_states
 ```
 
-## What is this thing?
+## Load a shapefile
+
 
 ```{r}
 #| output-location: fragment
+# load library
+library(sf)
+
+# load data
+german_states <- sf::read_sf("./data/VG250_LAN.shp")
+
+# let's have a look
 german_states
 ```
 
@@ -280,7 +301,7 @@ Each polygon is defined by several connected points to build an enclosed area. S
 
 ```{r}
 #| output-location: fragment
-# extract the simple features column and further inspecting 
+# extract the simple features column and further inspecting it
 german_states$geometry[5] |> 
   dplyr::glimpse()
 ```
@@ -303,18 +324,25 @@ sf::st_crs(german_states)
 
 ## Difference to vector data
 
-Data Structure:
+::::: columns
+::: {.column width="50%"}
 -   Other data format(s), different file extensions
 -   Geometries do not differ within one dataset
-
-Implications:
 -   Other geospatial operations possible
-
-Benefits:
 -   Can be way more efficient and straightforward to process
 -   It's like working with simple tabular data
+:::
 
-## Visual difference between vector and raster data
+::: {.column width="50%"}
+![](../img/Bitmap_VS_SVG.svg.png)
+<p style="text-align: right;">
+
+<small>Von Yug, modifications by Cfaerber et al. - Eigenes Werk, CC BY-SA 2.5, https://commons.wikimedia.org/w/index.php?curid=1183592</small>
+</p>
+:::
+:::::
+
+## Visual difference between vector and raster data in geospatial data
 
 ![](../img/fig_geometries.png){.r-stretch fig-align="center"}
 
@@ -328,25 +356,39 @@ Benefits:
 
 ## Metadata
 
+::::: columns
+::: {.column width="50%"}
 -   Information about geometries is globally stored
 -   They are the same for all observations
 -   Their location in space is defined by their cell location in the data table
 -   Without this information, raster data were simple image files
+:::
+
+::: {.column width="50%"}
+![](../img/same_picture.jpg){fig-align="right" width="75%"}
+<p style="text-align: center;">
+<small>https://knowyourmeme.com/memes/theyre-the-same-picture</small>
+</p>
+:::
+:::::
 
 ## Important metadata
 
-**Raster Dimensions**: number of columns, rows, and cells
+**Raster Dimensions** $\rightarrow$  number of columns, rows, and cells
 
-**Extent**: similar to bounding box in vector data
+**Extent** $\rightarrow$ similar to bounding box in vector data
 
-**Resolution**: the size of each raster cell
+**Resolution** $\rightarrow$ the size of each raster cell
 
-**Coordinate reference system**: defines where on the earth's surface the raster layer lies
+**Coordinate reference system** $\rightarrow$ defines where on the earth's surface the raster layer lies
+
+![](../img/raster_important_metadata.png){.r-stretch fig-align="center"}
 
 ## Setting up a raster dataset is easy
 
 ```{r}
 #| output-location: fragment
+# Defining a simple 4x4 matrix with some sampled numbers
 input_data <- 
   sample(1:100, 16) |> 
   matrix(nrow = 4)
@@ -358,6 +400,7 @@ input_data
 
 ```{r}
 #| output-location: fragment
+# Converting our 4x4 matrix into a terra raster object
 raster_layer <- terra::rast(input_data)
 
 raster_layer
@@ -367,6 +410,7 @@ raster_layer
 
 ```{r}
 #| output-location: fragment
+# Plotting the terra raster object
 terra::plot(raster_layer)
 ```
 
@@ -379,15 +423,23 @@ terra::plot(raster_layer)
 -   ...
 -   Sometimes, raster data come even in a text format, such as `CSV`
 
-**In this course, we will only use `tiff` files as they are pretty common. Just be aware that there are different formats out there.**
+**In this course, we will only use `tif` files as they are pretty common. Just be aware that there are different formats out there.**
 
 ## Implementations in `R`
 
+::::: columns
+::: {.column width="50%"}
 `terra` is the most commonly used package for raster data in `R`.
 
 Some other developments, e.g., in the `stars` package, also implement an interface to simple features in `sf`.
 
 The `terra` package helps to use more elaborate zonal statistics. But the `spatstat` package is more advanced.
+:::
+
+::: {.column width="50%"}
+![](../img/terra_logo.png){fig-align="center" width="75%"}
+:::
+:::::
 
 ## Loading raster tifs (German census data)
 
