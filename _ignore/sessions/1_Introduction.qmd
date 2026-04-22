@@ -152,11 +152,34 @@ course_content |>
 ```
 
 
-## Why?
+## "All things are connected"
 
-A lot of (classic) theories inherently make use of space (e.g., Allport 1954)[^1]
+**Catchphrase #1: Tobler's Law:** "*I invoke the first law of geography: everything is related to everything else, but near things are more related than distant things.*" (Tobler 1970)[^1]
 
-[^1]: Allport, Gordon W. 1954. The Nature of Prejudice. Cambridge, Massachusetts: Addison-Wesley Publishing Company.
+**Catchphrase #2: Tobler's Addendum:** "*near can take on many meanings in different situations.*" (Tobler 2004)[^2]
+
+$\rightarrow$ "*Space is more than geography*" (Beck et al. 2006)[^3]
+
+<br>
+
+[^1]: Tobler, Waldo R. 1970. A Computer Movie Simulating Urban Growth in the Detroit Region. *Economic Geography* 46, 234-240.
+[^2]: Tobler, Waldo R. 2004. On the First Law of Geography: A Reply. *Annals of the Association of American Geographers* 94(2), 304-310.
+[^3]: Beck, Nathaniel, Kristian Gleditsch, and Kyle Beardsley. 2006. Space Is More than Geography: Using Spatial Econometrics in the Study of Political Economy. *International Studies Quarterly* 50, 27-44.
+
+
+## Spatial Association
+
+![](../img/Konfessionen_Deutschland_Zensus_2022.png){fig-align="center" width="20%"}
+
+
+<small>Source: [Gretarsson based on Zensus 2022](https://de.wikipedia.org/wiki/Religionen_in_Deutschland#/media/Datei:Konfessionen_Deutschland_Zensus_2022.png) </small>
+
+
+## "All things are connected"
+
+A lot of (classic) theories inherently make use of space (e.g., Allport 1954)[^4]
+
+[^4]: Allport, Gordon W. 1954. The Nature of Prejudice. Cambridge, Massachusetts: Addison-Wesley Publishing Company.
 
 -   It's where people interact
 -   It's what people collectively shape
@@ -168,13 +191,15 @@ Thus, there's a deep intersection or even embeddedness of space in social scienc
 -   But often, these links are even only implicit in our data
 
 
-## Geographic information in social science research
+## Geographic information in social science
 
 ::::: columns
 ::: {.column width="50%"}
 Exploiting geographic information is not new.
 
-For example, Siegfried (1913)[^2] used soil composition information to explain election results in France.
+For example, Siegfried (1913)[^5] used soil composition information to explain election results in France.
+
+The book is often seen as foundational for **electoral geography** because it demonstrates that political behavior is embedded in place.
 :::
 
 ::: {.column width="50%"}
@@ -182,12 +207,15 @@ For example, Siegfried (1913)[^2] used soil composition information to explain e
 :::
 :::::
 
-[^2]: Siegfried, André. 1913. Tableau Politique de La France de l’Ouest Sous La Troisième République. Paris: Collin.
+[^5]: Siegfried, André. 1913. Tableau Politique de La France de l’Ouest Sous La Troisième République. Paris: Collin.
 
 
 ## Remember the Chicago School?
 
-![](../img/park_etal.png){fig-align="center" width="35%"}
+Park, Burgess, and McKenzie (1925) argue that the city should be studied not just as a physical settlement, but as a social and ecological order shaped by **interaction, competition, mobility, institutions, and patterns of land use**.
+
+![](../img/park_etal.png){fig-align="center" width="25%"}
+
 
 ::: aside
 Park, Robert E., Ernest W. Burgess, and Roderick D. McKenzie. 1925. The City. Suggestions for Investigation of Human Behavior in the Urban Environment. Chicago and London: University of Chicago Press.
@@ -227,6 +255,15 @@ So many studies still rely on these ideas but incorporate space directly, e.g.,
 </p>
 :::
 :::::
+
+
+## PolSci perspectives
+
+"*Since 1815, the probability that a randomly chosen country will be a democracy is about 0.75 if the majority of its neighbours are democracies, but only 0.14 if the majority of its neighbors are non-democracies*." (Gleditsch and Ward 2006)
+
+![](../img/democracy_2025.png){fig-align="center" width="70%"}
+
+<small>[V-Dem. 2026](https://ourworldindata.org/grapher/political-regime) </small>
 
 
 ## Some recent studies
@@ -573,11 +610,11 @@ contains the full list, including Non-CRAN packages.
 -   [`ggplot2`](https://cran.r-project.org/web/packages/ggplot2/index.html)
 -   [`ggspatial`](https://cran.r-project.org/web/packages/ggspatial/index.html)
 -   [`osmdata`](https://cran.r-project.org/web/packages/osmdata/index.html)
--   [**`OpenStreetMap`**](https://cran.r-project.org/web/packages/OpenStreetMap/index.html)[^3]
+-   [**`OpenStreetMap`**](https://cran.r-project.org/web/packages/OpenStreetMap/index.html)[^6]
 -   [`sf`](https://cran.r-project.org/web/packages/sf/index.html)
 -   [`spatialreg`](https://cran.r-project.org/web/packages/spatialreg/index.html)
 
-[^3]: If you use a Mac, you may need to install Java: https://www.java.com/de/download/
+[^6]: If you use a Mac, you may need to install Java: https://www.java.com/de/download/
 
 ## Packages in this course II `r emo::ji("package")`
 
