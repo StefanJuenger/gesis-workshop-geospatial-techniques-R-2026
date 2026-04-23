@@ -28,13 +28,15 @@ This page comprises the official workshop repository with the most recent change
 
 - District attributes are from [INKAR](https://www.inkar.de/) and curated by Bundesinstitut für Bau-, Stadt- und Raumforschung (BBSR)
 
-- German Census 2011 data are provided by the [Federal Statistical Office Germany, Wiesbaden 2020](https://www.zensus2011.de/EN/Home/home_node.html)
+-   German Census 2022 data are provided by the [Federal Statistical Office Germany, Wiesbaden 2025](https://ergebnisse.zensus2022.de/)
 
 - Shapefiles, voting data, and car-related data for Cologne are gathered from the [Open Data Portal Cologne](https://www.offenedaten-koeln.de/)
 
 - Information about public transport stops and streets are from [OpenStreetMap](https://www.openstreetmap.org/)
 
 - Weather data are gathered from [Climate Data Center of the German Weather Service](https://www.dwd.de/DE/klimaumwelt/cdc/cdc_node.html)
+
+- Land use data are from the [IOER Monitor](https://www.ioer-monitor.de/)
 
 **Please make sure that if you reuse any of the provided data to cite the original data sources.**
 
