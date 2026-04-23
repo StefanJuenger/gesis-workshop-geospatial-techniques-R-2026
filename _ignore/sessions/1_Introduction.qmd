@@ -612,12 +612,13 @@ contains the full list, including Non-CRAN packages.
 -   [`osmdata`](https://cran.r-project.org/web/packages/osmdata/index.html)
 -   [**`OpenStreetMap`**](https://cran.r-project.org/web/packages/OpenStreetMap/index.html)[^6]
 -   [`sf`](https://cran.r-project.org/web/packages/sf/index.html)
--   [`spatialreg`](https://cran.r-project.org/web/packages/spatialreg/index.html)
 
 [^6]: If you use a Mac, you may need to install Java: https://www.java.com/de/download/
 
 ## Packages in this course II `r emo::ji("package")`
 
+- [`sora`](https://git.gesis.org/sora-service/sora)
+-   [`spatialreg`](https://cran.r-project.org/web/packages/spatialreg/index.html)
 -   [`spatstat`](https://cran.r-project.org/web/packages/spatstat/index.html)
 -   [`sfdep`](https://cran.r-project.org/web/packages/sfdep/index.html)
 -   [`spdep`](https://cran.r-project.org/web/packages/spdep/index.html)
