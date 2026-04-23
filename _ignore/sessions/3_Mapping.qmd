@@ -15,6 +15,10 @@ format:
     logo: ../img/GESIS-Logo_2024.svg.png
 editor_options:
   chunk_output_type: console
+knitr:
+  opts_chunk: 
+    R.options:
+      width: 120
 ---
 
 ```{r}
@@ -43,7 +47,8 @@ library(tmap)
 source("./course_content.R") 
 
 course_content |> 
-  kableExtra::row_spec(5, background = "yellow")
+  kableExtra::row_spec(5, background = "yellow") |> 
+  kableExtra::kable_styling(font_size = 20)
 ```
 
 ## Fun with flags... MAPS!
@@ -822,7 +827,7 @@ gganimate::anim_save("vote_animation.gif")
 :::
 
 ::: {.column width="50%"}
-![](../img/vote_animation.gif){fig-align="center" width="50%"}
+![](../img/vote_animation.gif){fig-align="center" width="90%"}
 :::
 ::::
 
@@ -1110,11 +1115,6 @@ colorBlindness::cvdPlot(tmp)
 
 <small>Created with the package [`colorBlindness`](https://cran.r-project.org/web/packages/colorBlindness/index.html). Viridis palettes are designed to be perceptually uniform and accessible for color vision deficiencies.</small>
 
-## Exercise 3_2: Fun with Maps
-
-[Exercise](exercises/3_2_Fun_with_Maps.html)
-
-
 ## `tmap`: An Alternative
 
 [`tmap`](https://r-tmap.github.io/tmap/) is another popular package for thematic mapping in R:
@@ -1153,3 +1153,11 @@ tmap_mode("plot")
 ```
 
 For learning more: [r-tmap.github.io/tmap](https://r-tmap.github.io/tmap/)
+
+
+
+## Exercise 3_2: Fun with Maps
+
+[Exercise](exercises/3_2_Fun_with_Maps.html)
+
+
