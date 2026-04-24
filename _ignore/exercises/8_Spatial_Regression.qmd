@@ -164,11 +164,11 @@ election_results <-
 
 Re-use the code from the previous exercise for the Queen neighborhoods.
 But this time, do one weight matrix with row-normalization and another with min-max-normalization.
-Insert them into two spatial regression lag models of your choice. You can select a party and use immigrant shares and inhabitants as explaining variables (f.e. `afd_share ~ immigrant_share + inhabitants`) Use Spatial Lag Y or Spatial Lag X model.
+Insert them into two spatial regression lag models of your choice. You can select variables and model of your own choice (f.e. `afd_share ~ immigrant_share + inhabitants` and Spatial Lag Y).
 :::
 
 ::: {.callout-caution collapse="true"}
-## `o::ji("bulb")` Tip
+## `r emo::ji("bulb")` Tip
 
 For min-max-normalization, you would have to use the option `style = "minmax"` in the `spdep:nb2listw()` function.
 :::
