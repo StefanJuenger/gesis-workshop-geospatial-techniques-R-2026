@@ -68,9 +68,9 @@ We want to know
 
 Three crucial steps:
 
-1. Define who is connected (neighbourhood matrix)
-2. Define the (relative) strength of connectivity (weights matrix)
-3. Compute autocorrelation
+1. Define who is connected (**neighbourhood matrix**)
+2. Define the (relative) strength of connectivity (**weights matrix**)
+3. Compute **autocorrelation measures**
 
 ## Step 1: Model connectiveness
 
@@ -109,12 +109,11 @@ Three crucial steps:
 :::
 ::::
 
-## A hypothetical 'research' question
+## Our case study
 
-Say we are interested in AfD voting outcomes in relation to ethnic compositions of neighborhoods.
+Say we are interested in clusters of citizens' **party preferences** and associations with covariates such as **rent prices** or **immigrant shares**.
 
-- Combination of far-right voting research with Allport's contact theory
-- We are just doing it in the Urban context of Cologne
+Again, we will focus on Cologne, utilizing **voting districts** instead of city districts this time.
 
 ## Voting districts
 
@@ -122,7 +121,10 @@ Say we are interested in AfD voting outcomes in relation to ethnic compositions 
 #| eval: false
 voting_districts <-
   sf::st_read("./data/Stimmbezirk.shp") |> 
-  dplyr::transmute(Stimmbezirk = as.numeric(nummer))
+  dplyr::mutate(
+    district_id = as.numeric(nummer)
+    ) |> 
+  dplyr::select(district_id, Shape_Area, geometry) 
 
 head(voting_districts, 2)
 ```
@@ -131,24 +133,78 @@ head(voting_districts, 2)
 #| echo: false
 voting_districts <-
   sf::st_read("../../data/Stimmbezirk.shp") |> 
-  dplyr::transmute(Stimmbezirk = as.numeric(nummer))
+  dplyr::mutate(
+    district_id = as.numeric(nummer)
+    ) |> 
+  dplyr::select(district_id, Shape_Area, geometry) 
 
 head(voting_districts, 2)
 ```
 
-## AfD vote share
+
+## Federal elections 2021
 
 ```{r}
-afd_votes <-
+btw21_votes <-
   glue::glue(
     "https://www.stadt-koeln.de/wahlen/bundestagswahl/09-2021/praesentation/\\
     Open-Data-Bundestagswahl476.csv"
   ) |> 
   readr::read_csv2() |>
-  dplyr::transmute(Stimmbezirk = `gebiet-nr`, afd_share = (F1 / F) * 100)
+  dplyr::mutate(
+    district_id = as.numeric(`gebiet-nr`),
+    valid_votes = `F`,
+    cdu_share = (F1 / valid_votes) * 100,
+    spd_share = (F2 / valid_votes) * 100,
+    fdp_share = (F3 / valid_votes) * 100,
+    afd_share = (F4 / valid_votes) * 100,
+    greens_share = (F5 / valid_votes) * 100,
+    linke_share = (F6 / valid_votes) * 100,
+    .keep = "none"
+  )
 
-head(afd_votes, 2)
+head(btw21_votes, 2)
 ```
+
+
+## Federal elections 2021
+
+We create additional factor variables for highest and second-highest vote shares.
+
+```{r}
+btw21_votes <- btw21_votes |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    highest_vote = factor(
+      sub(
+        "_share$",
+        "",
+        names(dplyr::pick(dplyr::ends_with("_share")))[
+          order(
+            dplyr::c_across(dplyr::ends_with("_share")),
+            decreasing = TRUE
+          )[1]
+        ]
+      )
+    ),
+    second_highest_vote = factor(
+      sub(
+        "_share$",
+        "",
+        names(dplyr::pick(dplyr::ends_with("_share")))[
+          order(
+            dplyr::c_across(dplyr::ends_with("_share")),
+            decreasing = TRUE
+          )[2]
+        ]
+      )
+    )
+  ) |>
+  dplyr::ungroup()
+
+table(btw21_votes$highest_vote)
+```
+
 
 ## Simple ID matching to link data
 
@@ -156,12 +212,13 @@ head(afd_votes, 2)
 election_results <-
   dplyr::left_join(
     voting_districts,
-    afd_votes,
-    by = "Stimmbezirk"
+    btw21_votes,
+    by = "district_id"
   )
 
 head(election_results, 2)
 ```
+
 
 ## Do vote shares spatially cluster?
 
@@ -170,12 +227,23 @@ head(election_results, 2)
 ```{r}
 #| eval: false
 #| fig.asp: 1
-ggplot() +
-  geom_sf(
-    data = election_results,
-    aes(fill = afd_share)
-    ) +
-  scale_fill_viridis_c()
+plot_data <- election_results |>
+  tidyr::pivot_longer(
+    cols = ends_with("_share"),
+    names_to = "party",
+    values_to = "vote_share"
+  ) |>
+  mutate(
+    party = sub("_share$", "", party),
+    party = factor(party)
+  )
+
+ggplot(plot_data) +
+  geom_sf(aes(fill = vote_share), color = NA) +
+  facet_wrap(~ party, nrow = 2, ncol = 3) +
+  scale_fill_viridis_c() +
+  theme_void() +
+  labs(fill = "Vote share")
 ```
 :::
 
@@ -183,15 +251,27 @@ ggplot() +
 ```{r}
 #| echo: false
 #| fig.asp: 1
-ggplot() +
-  geom_sf(
-    data = election_results,
-    aes(fill = afd_share)
-    ) +
-  scale_fill_viridis_c()
+plot_data <- election_results |>
+  tidyr::pivot_longer(
+    cols = ends_with("_share"),
+    names_to = "party",
+    values_to = "vote_share"
+  ) |>
+  mutate(
+    party = sub("_share$", "", party),
+    party = factor(party)
+  )
+
+ggplot(plot_data) +
+  geom_sf(aes(fill = vote_share), color = NA) +
+  facet_wrap(~ party, nrow = 2, ncol = 3) +
+  scale_fill_viridis_c() +
+  theme_void() +
+  labs(fill = "Vote share")
 ```
 :::
 ::::
+
 
 ## Pull in German Census data
 
@@ -204,6 +284,9 @@ immigrants_cologne  <- terra::subst(immigrants_cologne,  from = -9, to = NA)
 inhabitants_cologne <- terra::subst(inhabitants_cologne, from = -9, to = NA)
 
 immigrant_share_cologne <- (immigrants_cologne / inhabitants_cologne)*100
+
+age_rast <- terra::rast("./data/census22_age_avg.tif")
+rent_rast <- terra::rast("./data/census22_rent_avg.tif")
 ```
 
 ```{r}
@@ -215,7 +298,11 @@ immigrants_cologne  <- terra::subst(immigrants_cologne,  from = -9, to = NA)
 inhabitants_cologne <- terra::subst(inhabitants_cologne, from = -9, to = NA)
 
 immigrant_share_cologne <- (immigrants_cologne / inhabitants_cologne)*100
+
+age_rast <- terra::rast("../../data/census22_age_avg.tif")
+rent_rast <- terra::rast("../../data/census22_rent_avg.tif")
 ```
+
 
 ## It's raster data
 
@@ -226,7 +313,7 @@ immigrant_share_cologne <- (immigrants_cologne / inhabitants_cologne)*100
 #| fig.asp: 1
 ggplot() +
   tidyterra::geom_spatraster(
-    data = immigrant_share_cologne
+    data = rent_rast
     ) +
   scale_fill_viridis_c()
 ```
@@ -238,12 +325,13 @@ ggplot() +
 #| fig.asp: 1
 ggplot() +
   tidyterra::geom_spatraster(
-    data = immigrant_share_cologne
+    data = rent_rast
     ) +
   scale_fill_viridis_c()
 ```
 :::
 ::::
+
 
 ## Side quest: Aggregating raster by vector
 
@@ -256,6 +344,7 @@ As the voting (vector) data differs from the Census raster data, we cannot use s
   - But we can also aggregate more precisely with `exactextractr::exact_extract()`
 
 ---
+
 
 ## <small>`exactextractr::exact_extract()`!</small>
 
@@ -270,11 +359,20 @@ election_results <-
     inhabitants = 
       exactextractr::exact_extract(
         inhabitants_cologne, election_results, 'mean', progress = FALSE
+      ),
+    age_avg = 
+      exactextractr::exact_extract(
+        age_rast, election_results, 'mean', progress = FALSE
+      ),
+    rent_avg = 
+      exactextractr::exact_extract(
+        rent_rast, election_results, 'mean', progress = FALSE
       )
   )
 
 head(election_results, 2)
 ```
+
 
 ## Voilà
 
@@ -286,8 +384,8 @@ head(election_results, 2)
 ggplot() +
   geom_sf(
     data = election_results,
-    aes(fill = immigrant_share)
-    ) +
+    aes(fill = rent_avg)
+  ) +
   scale_fill_viridis_c()
 ```
 :::
@@ -299,8 +397,8 @@ ggplot() +
 ggplot() +
   geom_sf(
     data = election_results,
-    aes(fill = immigrant_share)
-    ) +
+    aes(fill = rent_avg)
+  ) +
   scale_fill_viridis_c()
 ```
 :::
@@ -331,6 +429,7 @@ ggplot() +
 :::
 ::::
 
+
 ## Let's try Queens neighborhoods
 
 ```{r}
@@ -342,6 +441,7 @@ queens_neighborhoods <-
 
 summary(queens_neighborhoods)
 ```
+
 
 ## And alternative rook neighborhoods
 
@@ -378,9 +478,12 @@ queen_lines <- queens_neighborhoods |>
 nb_points <- sf::st_centroid(queen_lines)
 
 ggplot() +
-  geom_sf(data = queen_lines, color = "firebrick", linewidth = 0.7, alpha = 0.6) +
-  geom_sf(data = rook_lines, color = "steelblue", linewidth = 0.7, alpha = 0.9) +
-  geom_sf(data = nb_points, size = 1.5) +
+  geom_sf(data = queen_lines, color = "#1b9e77", 
+          linewidth = 1, alpha = 0.6) +
+  geom_sf(data = rook_lines, color = "#d95f02", 
+          linewidth = 1, alpha = 0.9,
+          linetype = "dashed") +
+  geom_sf(data = nb_points, size = 2) +
   theme_void()
 ```
 :::
@@ -404,13 +507,17 @@ queen_lines <- queens_neighborhoods |>
 nb_points <- sf::st_centroid(queen_lines)
 
 ggplot() +
-  geom_sf(data = queen_lines, color = "firebrick", linewidth = 0.7, alpha = 0.6) +
-  geom_sf(data = rook_lines, color = "steelblue", linewidth = 0.7, alpha = 0.9) +
-  geom_sf(data = nb_points, size = 1.5) +
+  geom_sf(data = queen_lines, color = "#d95f02", 
+          linewidth = 1, alpha = 0.6) +
+  geom_sf(data = rook_lines, color = "#1b9e77", 
+          linewidth = 1, alpha = 0.9,
+          linetype = "dashed") +
+  geom_sf(data = nb_points, size = 2) +
   theme_void()
 ```
 :::
 ::::
+
 
 ## Can we now start?
 
@@ -423,9 +530,10 @@ spdep::nb2mat(queens_neighborhoods, style = "B")[1:10, 1:10]
 
 That's nothing we could plug into a statistical model, such as a regression or the like (see next session).
 
+
 ## Step 2: Normalization
 
-Normalization is the process of creating actual spatial weights. There is a debate on how to do it (Neumayer & Plümper, 2016)^[Neumayer, E., & Plümper, T. (2016). W. Political Science Research and Methods, 4(01), 175–193. https://doi.org/10.1017/psrm.2014.40]. But nobody questions whether it should be done in the first place since, among others, it restricts the parameter space of the weights.
+Normalization is the process of creating actual **spatial weights**. There is a debate on how to do it (Neumayer & Plümper, 2016)^[Neumayer, E., & Plümper, T. (2016). W. Political Science Research and Methods, 4(01), 175–193. https://doi.org/10.1017/psrm.2014.40]. But nobody questions whether it should be done in the first place since, among others, it restricts the parameter space of the weights.
 
 :::: columns
 ::: {.column width="50%"}
@@ -448,6 +556,7 @@ rowSums(spdep::nb2mat(queens_neighborhoods, style = "W")[1:5, 1:5]) |> as.vector
 ```
 :::
 ::::
+
 
 ## Row-normalization
 
@@ -567,11 +676,89 @@ head(election_results, 2)
 
 ## Step 3: Tests of spatial autocorrelation
 
+- Global measures consider the **average level of spatial autocorrelation across all observations**
+- Bias can be induced through **edge effects** where important parts of the spatial process fall outside the study area (compare to left- and right-censoring longitudinal data)
+
+Global tests in this session include:
+
+  1. **Join-count tests** for categorical data
+  2. **Moran's I**
+  3. **Geary's C**
+
+## Join-count tests for categorical data
+
+- Evaluates whether adjacent areas share the **same category**
+- The test counts joins: pairs of neighboring polygons (defined by your **weights matrix**)
+- It compares observed joins to what would be expected under **spatial randomness** (null hypothesis)
+
+$$
+z_{kl} =
+\frac{J_{kl} - \operatorname{E}(J_{kl})}
+{\sqrt{\operatorname{Var}(J_{kl})}}
+$$
+
+where:
+
+- $J_{kl}$ = observed number of joins between categories $k$ and $l$
+- $\operatorname{E}(J_{kl})$ = expected joins under spatial randomness
+- $\operatorname{Var}(J_{kl})$ = variance under the null hypothesis
+
+
+## Join-count tests for categorical data
+
+- Same-category joins higher than expected: **spatial clustering**
+- Mixed-category joins lower than expected: **spatial segregation**
+- Mixed-category joins higher than expected: **spatial dispersion**
+
+```{r}
+args(spdep::joincount.multi)
+```
+
+
+## Join-count tests for categorical data
+
+:::: columns
+::: {.column width="50%"}
+```{r}
+#| echo: true
+#| fig.asp: 1
+spdep::joincount.multi(
+  election_results$highest_vote,
+  listw = queens_W
+)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+#| fig.asp: 1
+ggplot(election_results) +
+  geom_sf(aes(fill = highest_vote), color = "white", linewidth = 0.1) +
+  scale_fill_manual(
+    values = c(
+      "greens" = "darkgreen",
+      "spd" = "red",
+      "cdu" = "black"
+    )
+  ) +
+  theme_void() +
+  labs(
+    fill = "Highest vote",
+    title = "Spatial clusters of winning parties"
+  )
+```
+:::
+::::
+
+
+## Step 3: Tests of spatial autocorrelation
+
 $$I=\frac{N}{\sum_{i=1}^N\sum_{j=1}^Nw_{ij}}\frac{\sum_{i=1}^{N}\sum_{j=1}^Nw_{ij}(x_i-\bar{x})(x_j-\bar{x})}{\sum_{i=1}^N(x_i-\bar{x})^2}$$
 
-Most and foremost, **Moran's I** use the previously created weights between all spatial unit pairs $w_{ij}$. It weights deviations from an overall mean value of connected pairs according to the strength of the modeled spatial relations. 
-
-Moran's I can be interpreted as a correlation coefficient (-1 = perfect negative spatial autocorrelation; +1 = perfect positive spatial autocorrelation).
+- Most and foremost, **Moran's I** use the previously created weights between all spatial unit pairs $w_{ij}$. 
+- It weights deviations from an overall mean value of connected pairs according to the strength of the modeled spatial relations. 
+- Moran's I can be interpreted as a correlation coefficient with a **range from -1 to +1** 
 
 
 ## Example patterns
@@ -689,13 +876,94 @@ ggplot(plot_df, aes(x, y, fill = value)) +
 
 ## Moran's I in `spdep`
 
+:::: columns
+::: {.column width="50%"}
 ```{r}
+#| echo: true
+#| fig.asp: 1
 spdep::moran.test(
-  election_results$immigrant_share, 
+  election_results$rent_avg, 
   listw = queens_W
 )
 ```
+:::
 
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig.asp: 1
+ggplot() +
+  geom_sf(
+    data = election_results,
+    aes(fill = rent_avg)
+  ) +
+  scale_fill_viridis_c()
+```
+:::
+::::
+
+
+## Moran scatterplot
+
+:::: columns
+::: {.column width="50%"}
+```{r}
+#| eval: false
+#| fig.asp: 1
+mp <- spdep::moran.plot(
+  x = election_results$rent_avg,
+  listw = queens_W,
+  labels = election_results$district_id,
+  xlab = "Rent average",
+  ylab = "Spatial lag of rent average"
+)
+
+x_mean <- mean(election_results$rent_avg, na.rm = TRUE)
+lag_rent <- spdep::lag.listw(queens_W, election_results$rent_avg)
+y_mean <- mean(lag_rent, na.rm = TRUE)
+
+x_range <- range(mp$x, na.rm = TRUE)
+y_range <- range(mp$wx, na.rm = TRUE)
+
+x_left  <- mean(c(x_range[1], x_mean))
+x_right <- mean(c(x_mean, x_range[2]))
+
+text(x_right, y_range[2], "High–High", pos = 1, col = "red")
+text(x_left,  y_range[2], "Low–High",  pos = 1, col = "red")
+text(x_left,  y_range[1], "Low–Low",   pos = 3, col = "red")
+text(x_right, y_range[1], "High–Low",  pos = 3, col = "red")
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: false
+#| fig.asp: 1
+mp <- spdep::moran.plot(
+  x = election_results$rent_avg,
+  listw = queens_W,
+  labels = election_results$district_id,
+  xlab = "Rent average",
+  ylab = "Spatial lag of rent average"
+)
+
+x_mean <- mean(election_results$rent_avg, na.rm = TRUE)
+lag_rent <- spdep::lag.listw(queens_W, election_results$rent_avg)
+y_mean <- mean(lag_rent, na.rm = TRUE)
+
+x_range <- range(mp$x, na.rm = TRUE)
+y_range <- range(mp$wx, na.rm = TRUE)
+
+x_left  <- mean(c(x_range[1], x_mean))
+x_right <- mean(c(x_mean, x_range[2]))
+
+text(x_right, y_range[2], "High–High", pos = 1, col = "red")
+text(x_left,  y_range[2], "Low–High",  pos = 1, col = "red")
+text(x_left,  y_range[1], "Low–Low",   pos = 3, col = "red")
+text(x_right, y_range[1], "High–Low",  pos = 3, col = "red")
+```
+:::
+::::
 
 ## Moran's I in `sfdep`
 
@@ -703,7 +971,7 @@ spdep::moran.test(
 library(magrittr)
 
 election_results %$% 
-  sfdep::global_moran_test(immigrant_share, neighbors, weights)
+  sfdep::global_moran_test(rent_avg, neighbors, weights)
 ```
 
 
@@ -721,7 +989,7 @@ Geary's C only produces values between 0 and 2 (value near 0 = positive spatial 
 
 ```{r}
 spdep::geary.test(
-  election_results$immigrant_share, 
+  election_results$rent_avg, 
   listw = queens_W
 )
 ```
@@ -731,13 +999,8 @@ spdep::geary.test(
 
 ```{r}
 election_results %$% 
-  sfdep::global_c_test(immigrant_share, neighbors, weights)
+  sfdep::global_c_test(rent_avg, neighbors, weights)
 ```
-
-
-## Exercise 7: Neighborhood Matrices
-
-[Exercise](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/7_Neighborhood_Matrices.html)
 
 
 ## Measures of local spatial autocorrelation: LISA clusters
@@ -752,9 +1015,9 @@ $$I_i=\frac{x_i-\bar{x}}{\frac{\sum_{i-1}^N(x_i-\bar{x})^2}{N}}\sum_{j=1}^Nw_{ij
 lisa <- 
   election_results |> 
   dplyr::mutate(
-    lisa = sfdep::local_moran(afd_share, neighbors, weights)
+    lisa = sfdep::local_moran(rent_avg, neighbors, weights)
   ) |>
-  tidyr::unnest()
+  tidyr::unnest(cols = lisa)
 
 head(lisa, 2)
 ```
@@ -789,31 +1052,51 @@ ggplot() +
 :::
 ::::
 
-## One last bit: bivariate local Moran's I
+
+## It's suitable for hot-spot analysis
 
 :::: columns
 ::: {.column width="50%"}
 ```{r}
 #| eval: false
 #| fig.asp: 1
-lisa_bivariate <- 
-  election_results |> 
+lisa <- lisa |>
   dplyr::mutate(
-    lisa = sfdep::local_moran_bv(
-      afd_share, 
-      immigrant_share, 
-      neighbors, 
-      weights
+    lisa_cluster_rent = dplyr::if_else(
+      p_folded_sim < 0.05,
+      as.character(mean),
+      "Not significant"
+    ),
+    lisa_cluster_rent = factor(
+      lisa_cluster_rent,
+      levels = c(
+        "High-High",
+        "Low-Low",
+        "High-Low",
+        "Low-High",
+        "Not significant"
       )
-  ) |> 
-  tidyr::unnest()
+    )
+  )
 
-ggplot() +
-  geom_sf(
-    data = lisa_bivariate,
-    aes(fill = Ib)
+ggplot(lisa) +
+  geom_sf(aes(fill = lisa_cluster_rent), color = NA) +
+  scale_fill_manual(
+    values = c(
+      "High-High" = "red",
+      "Low-Low" = "blue",
+      "High-Low" = "orange",
+      "Low-High" = "lightgreen",
+      "Not significant" = "grey90"
+    ),
+    drop = FALSE
   ) +
-  scale_fill_viridis_c()
+  theme_void() +
+  labs(
+    fill = "LISA cluster",
+    title = "Local Moran clusters for average rent",
+    subtitle = "Significance based on p_folded_sim < 0.05"
+  )
 ```
 :::
 
@@ -821,18 +1104,78 @@ ggplot() +
 ```{r}
 #| echo: false
 #| fig.asp: 1
+lisa <- lisa |>
+  dplyr::mutate(
+    lisa_cluster_rent = dplyr::if_else(
+      p_folded_sim < 0.05,
+      as.character(mean),
+      "Not significant"
+    ),
+    lisa_cluster_rent = factor(
+      lisa_cluster_rent,
+      levels = c(
+        "High-High",
+        "Low-Low",
+        "High-Low",
+        "Low-High",
+        "Not significant"
+      )
+    )
+  )
+
+ggplot(lisa) +
+  geom_sf(aes(fill = lisa_cluster_rent), color = NA) +
+  scale_fill_manual(
+    values = c(
+      "High-High" = "red",
+      "Low-Low" = "blue",
+      "High-Low" = "orange",
+      "Low-High" = "lightgreen",
+      "Not significant" = "grey90"
+    ),
+    drop = FALSE
+  ) +
+  theme_void() +
+  labs(
+    fill = "LISA cluster",
+    title = "Local Moran clusters for average rent",
+    subtitle = "Significance based on p_folded_sim < 0.05"
+  )
+```
+:::
+::::
+
+## Exercise 7: Neighborhood Matrices
+
+[Exercise](https://stefanjuenger.github.io/gesis-workshop-geospatial-techniques-R-2026/exercises/7_Neighborhood_Matrices.html)
+
+## One last bit: bivariate local Moran's I
+
+:::: columns
+::: {.column width="50%"}
+```{r}
+#| eval: true
+#| fig.asp: 1
 lisa_bivariate <- 
   election_results |> 
   dplyr::mutate(
-    lisa = sfdep::local_moran_bv(
-      afd_share, 
-      immigrant_share, 
+    lisa_bv = sfdep::local_moran_bv(
+      cdu_share, 
+      rent_avg, 
       neighbors, 
       weights
-      )
+    )
   ) |> 
-  tidyr::unnest()
+  tidyr::unnest(cols = lisa_bv)
 
+head(lisa_bivariate)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+#| fig.asp: 1
 ggplot() +
   geom_sf(
     data = lisa_bivariate,
