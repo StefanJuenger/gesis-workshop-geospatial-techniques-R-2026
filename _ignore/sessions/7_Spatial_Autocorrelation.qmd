@@ -109,6 +109,8 @@ Three crucial steps:
 :::
 ::::
 
+In graph lingo: We have one (or more) disjoint connected subgraph(s)
+
 ## Our case study
 
 Say we are interested in clusters of citizens' **party preferences** and associations with covariates such as **rent prices** or **immigrant shares**.
@@ -535,6 +537,13 @@ That's nothing we could plug into a statistical model, such as a regression or t
 
 Normalization is the process of creating actual **spatial weights**. There is a debate on how to do it (Neumayer & Plümper, 2016)^[Neumayer, E., & Plümper, T. (2016). W. Political Science Research and Methods, 4(01), 175–193. https://doi.org/10.1017/psrm.2014.40]. But nobody questions whether it should be done in the first place since, among others, it restricts the parameter space of the weights.
 
+Without normalization:
+
+- Units with many neighbors exert more influence
+- Spatial lag depends on network density
+
+**Goal**: make influence comparable across units
+
 :::: columns
 ::: {.column width="50%"}
 ```{r}
@@ -562,11 +571,11 @@ rowSums(spdep::nb2mat(queens_neighborhoods, style = "W")[1:5, 1:5]) |> as.vector
 
 One of the standard procedures is row-normalization. It divides all individual weights (=connections between spatial units) $w_{ij}$ by the row-wise sum of of all other weights:
 
-$$W = \sum_j\frac{w_{ij}}{\sum_jw_{ij}}$$
+Each weight is normalized by the sum of its row:
 
-An alternative would be min-max-normalization:
-
-$$W = \sum_j\frac{w_{ij}}{min(\{max(r_{i}), max(c_{i})\})}$$
+$$
+w_{ij}^* = \frac{w_{ij}}{\sum_j w_{ij}}
+$$
 
 ## Effect of row-normalization
 
@@ -647,6 +656,27 @@ ggplot(df, aes(x, y)) +
   )
 
 ```
+
+
+## Alternatives to row-normalization
+
+**"B"** (Binary)
+- Keeps original neighbor structure
+
+**"W"** (Row-standardized)
+- Row-normalized weights / Each unit’s weights sum to 1 / Interpretable as average of neighbors
+
+**"C"** (Globally standardized)
+- Weights scaled so the total sum across all units equals n (number of observations) / Preserves global comparability
+
+**"U"** (Equal to C but unscaled)
+- Similar structure to "C", but total sum equals 1 / Less commonly used
+
+**"S"** (Variance-stabilizing)
+- Adjusts weights to stabilize variance across units / Reduces influence of highly connected units
+
+**"minmax"**
+- Scales weights by the minimum of the maximum row and column sums / Keeps weights bounded and comparable
 
 
 ## Apply row-normalization
@@ -977,13 +1007,18 @@ election_results %$%
 
 ## Test of spatial autocorrelation: Geary's C
 
-Moran's I is a global statistic for spatial autocorrelation. It can produce issues when there are only local clusters of spatial interdependence in the data. An alternative is the use of `Geary's C`:
+Moran's I is based on **covariance** between values and their spatial lag and captures overall similarity patterns. It can produce issues when there are only local clusters of spatial interdependence in the data. An alternative is the use of `Geary's C`:
 
 $$C=\frac{(N-1)\sum_i\sum_jw_{ij}(x_i-x_j)^2}{2\sum_{i=1}^N\sum_{j=1}^Nw_{ij}\sum_i(x_i-\bar{x})^2}$$
 
-As you can see, in the numerator, the average value $\bar{x}$ is not as prominent as in Moran's I. 
+It is based on **squared differences** between neighbors and emphasizes local dissimilarities. 
 
-Geary's C only produces values between 0 and 2 (value near 0 = positive spatial autocorrelation; 1 = no spatial autocorrelation; values near 2 = negative spatial autocorrelation).
+Geary's C only produces values between 0 and 2: 
+
+- values near 0 = positive spatial autocorrelation; 
+- values near 1 = no spatial autocorrelation; 
+- values near 2 = negative spatial autocorrelation.
+
 
 ## Geary's C in `spdep`
 
