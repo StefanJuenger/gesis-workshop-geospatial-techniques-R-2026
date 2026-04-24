@@ -175,6 +175,9 @@ immigrants_proportion <- immigrants_cologne / inhabitants_cologne
 # set a proper name for our created layer
 names(immigrants_proportion) <- "immigrants_proportion"
 
+# note the nicer name of the attribute
+immigrants_proportion
+
 # plot it
 terra::plot(immigrants_proportion)
 ```
